@@ -84,10 +84,9 @@ sequenceDiagram
     Pub6C->>Pub6C: sitemap.xml に新URL追加<br/>robots.txt 確認・更新
     Pub6C-->>Orch: updated /sitemap.xml, /robots.txt
 
-    Orch->>Orch: state.json: next_index = i+1, status=active<br/>tmp/run-YYYY-MM-DD/ 削除
-    Orch->>GH: git commit + push<br/>(work page + index + sitemap + state.json)
+    Orch->>Orch: state.json: next_index = i+1, status=active<br/>DATA/logs/YYYY-MM-DD.json 保存（final_status=published）<br/>tmp/run-YYYY-MM-DD/ 削除
+    Orch->>GH: git commit + push<br/>(work page + index + sitemap + state.json + DATA/logs)
     GH-->>Orch: push 完了
-    Orch->>Orch: DATA/logs/YYYY-MM-DD.json 保存
     Orch-->>OC: 完了通知（公開成功）
 ```
 
@@ -151,9 +150,9 @@ sequenceDiagram
     Pub-->>Orch: generated files
 
     Orch->>Orch: state.json: next_index = i+2<br/>（スキップ分も加算済み）
-    Orch->>GH: commit + push
+    Orch->>Orch: DATA/logs/YYYY-MM-DD.json 保存<br/>final_status="published"
+    Orch->>GH: commit + push（state.json + DATA/logs + generated files）
     GH-->>Orch: push 完了
-    Orch->>Orch: ログ保存（attempt=2, 1スキップ+1成功）
     Orch-->>OC: 完了通知（公開成功）
 ```
 
@@ -224,7 +223,9 @@ sequenceDiagram
 
     Orch->>Pub: publish(work)
     Pub-->>Orch: generated files
-    Orch->>GH: commit + push
+    Orch->>Orch: state.json: next_index = i+2<br/>（QA FAIL 分も加算済み）
+    Orch->>Orch: DATA/logs/YYYY-MM-DD.json 保存<br/>final_status="published"
+    Orch->>GH: commit + push（state.json + DATA/logs + generated files）
     GH-->>Orch: push 完了
     Orch-->>OC: 完了通知
 ```
@@ -273,9 +274,9 @@ sequenceDiagram
 
     Note over Orch,GH: ── 3回失敗：公開なし ──
     Orch->>Orch: state.json: next_index = i+3<br/>（失敗分もインクリメント）
-    Orch->>GH: commit + push（state.json のみ）
-    GH-->>Orch: push 完了
     Orch->>Orch: DATA/logs/YYYY-MM-DD.json 保存<br/>final_status="no_publication"
+    Orch->>GH: commit + push（state.json + DATA/logs）
+    GH-->>Orch: push 完了
     Orch-->>OC: 失敗通知（3候補すべて失敗）
     OC-->>OC: アラート送信
 ```
@@ -284,7 +285,7 @@ sequenceDiagram
 
 ## 5. works.json 枯渇（exhausted）
 
-`next_index` が `works.length` に達し、GitHub Issue が自動作成されるシナリオ。
+`next_index` が `works.length` に達した際、未対応 Issue が無い場合のみ GitHub Issue を1回作成するシナリオ。
 
 ```mermaid
 sequenceDiagram
@@ -297,14 +298,20 @@ sequenceDiagram
     OC->>Orch: trigger(date=YYYY-MM-DD)
     Orch->>Orch: load state.json<br/>next_index = N, works.length = N<br/>→ next_index >= works.length
 
+    Orch->>GH: gh issue list --state open<br/>--search "works.json exhausted — manual extension required"
+    GH-->>Orch: open issue の有無
+
+    alt 未対応Issueなし（初回遷移）
+        Orch->>GH: gh issue create<br/>title="works.json exhausted — manual extension required"<br/>body="next_index=N, works.length=N\n最終公開日: YYYY-MM-DD\n対応: works.jsonに作品を追加しnext_indexをリセット"
+        GH-->>Orch: Issue URL
+    else 未対応Issueあり（継続実行）
+        Orch->>Orch: Issue 作成をスキップ（1回のみ）
+    end
+
     Orch->>Orch: state.json: status = "exhausted"
-    Orch->>GH: commit + push（state.json: exhausted）
-    GH-->>Orch: push 完了
-
-    Orch->>GH: gh issue create<br/>title="works.json exhausted — manual extension required"<br/>body="next_index=N, works.length=N\n最終公開日: YYYY-MM-DD\n対応: works.jsonに作品を追加しnext_indexをリセット"
-    GH-->>Orch: Issue URL
-
     Orch->>Orch: DATA/logs/YYYY-MM-DD.json 保存<br/>final_status="exhausted"
+    Orch->>GH: commit + push（state.json + DATA/logs）
+    GH-->>Orch: push 完了
     Orch-->>OC: 緊急アラート（exhausted）
 
     Note over Maint,GH: ── Maintainer 対応 ──
@@ -368,7 +375,7 @@ sequenceDiagram
 
 ## 7. GitHub push エラー（コンフリクト）
 
-push 時にコンフリクトが発生し、pull-rebase を1回試みるシナリオ。
+push 時にコンフリクトが発生し、pull-rebase を1回試み、`state.json` を決定的ルールで解消するシナリオ。
 
 ```mermaid
 sequenceDiagram
@@ -383,12 +390,18 @@ sequenceDiagram
     Note over Orch,GH: ── pull + rebase で解消試行 ──
     Orch->>GH: git fetch origin main
     GH-->>Orch: remote changes
-    Orch->>Orch: git rebase origin/main<br/>（state.json の競合を自動マージ）
+    Orch->>Orch: git rebase origin/main
+
+    alt state.json 競合あり
+        Orch->>Orch: 競合解決ルールを適用<br/>next_index=max(local, remote)<br/>skip_log=(date_jst,index,reason) で重複排除して和集合<br/>status=どちらかが exhausted なら exhausted
+    else 競合なし
+        Orch->>Orch: rebase 継続
+    end
 
     alt rebase 成功
+        Orch->>Orch: DATA/logs/YYYY-MM-DD.json に警告追記<br/>"push_conflict_resolved"
         Orch->>GH: git push origin main（2回目）
         GH-->>Orch: push 完了
-        Orch->>Orch: ログ保存（警告: push conflict resolved）
         Note over Orch: 公開成功
     else rebase 失敗（手動解消が必要）
         Orch->>Orch: rebase abort

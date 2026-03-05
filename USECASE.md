@@ -54,7 +54,7 @@ graph LR
         D7(作品ページを生成する)
         D8(インデックス・アーカイブを更新する)
         D9(サイトマップ・SEOを更新する)
-        D10(state.json を更新し push する)
+        D10(state.json / logs を更新し同一コミットで push する)
     end
 
     OC --> D1
@@ -155,9 +155,10 @@ sequenceDiagram
                 Pub->>Pub: 6C: sitemap.xml / robots.txt 更新
                 Pub-->>Orch: 生成ファイル一覧
 
-                Orch->>GH: commit + push（生成ファイル + state.json）
+                Orch->>Orch: state.json 更新（next_index = i+1, status = active）
+                Orch->>Orch: ログ保存 DATA/logs/YYYY-MM-DD.json（final_status=published）
+                Orch->>GH: commit + push（生成ファイル + state.json + DATA/logs を同一コミット）
                 GH-->>Orch: push 完了
-                Orch->>Orch: ログ保存 DATA/logs/YYYY-MM-DD.json
                 Note over OC,GH: ワークフロー完了（公開成功）
                 break
             end
@@ -165,7 +166,9 @@ sequenceDiagram
     end
 
     alt 3 候補すべて失敗
-        Orch->>GH: state.json のみ push（next_index 更新）
+        Orch->>Orch: state.json 更新（next_index 更新, status = active）
+        Orch->>Orch: ログ保存 DATA/logs/YYYY-MM-DD.json（final_status=no_publication）
+        Orch->>GH: commit + push（state.json + DATA/logs を同一コミット）
         Orch->>OC: 失敗通知（当日は公開なし）
     end
 ```
@@ -177,9 +180,17 @@ sequenceDiagram
 ```mermaid
 flowchart TD
     Start([日次実行開始]) --> Load[works.json / state.json 読み込み]
-    Load --> Exhausted{status == exhausted?}
-    Exhausted -- Yes --> Issue[GitHub Issue を作成\n管理者に通知] --> End([終了：公開なし])
-    Exhausted -- No --> Init[attempt = 0\ni = next_index]
+    Load --> AlreadyExhausted{status == exhausted?}
+
+    AlreadyExhausted -- Yes --> IssueCheck0{未対応の exhausted Issue が存在?}
+    IssueCheck0 -- No --> CreateIssue0[GitHub Issue を1回作成\n管理者に通知]
+    IssueCheck0 -- Yes --> SkipIssue0[Issue 作成をスキップ]
+    CreateIssue0 --> SaveExhaustedLog0[DATA/logs/YYYY-MM-DD.json 保存\nfinal_status=exhausted]
+    SkipIssue0 --> SaveExhaustedLog0
+    SaveExhaustedLog0 --> PushExhausted0[commit + push（state.json + DATA/logs を同一コミット）]
+    PushExhausted0 --> End([終了：公開なし])
+
+    AlreadyExhausted -- No --> Init[attempt = 0\ni = next_index]
 
     Init --> TryCandidate[候補 i を処理]
     TryCandidate --> Screen{Screener\nELIGIBLE?}
@@ -195,20 +206,30 @@ flowchart TD
     QACheck -- FAIL --> LogSkip3[skip_log 記録\ni++, attempt++]
     QACheck -- PASS --> Publish[Publisher: ページ生成]
 
-    Publish --> Push[commit + push]
-    Push --> UpdateState[state.json: next_index = i+1\nstatus = active]
-    UpdateState --> SaveLog[DATA/logs/YYYY-MM-DD.json 保存]
-    SaveLog --> End2([終了：公開成功])
+    Publish --> UpdateState[state.json: next_index = i+1\nstatus = active]
+    UpdateState --> SaveLog[DATA/logs/YYYY-MM-DD.json 保存\nfinal_status=published]
+    SaveLog --> PushSuccess[commit + push（生成ファイル + state.json + DATA/logs を同一コミット）]
+    PushSuccess --> End2([終了：公開成功])
 
-    LogSkip1 --> AttemptCheck{attempt >= 3\nまたは i >= works.length?}
-    LogSkip2 --> AttemptCheck
-    LogSkip3 --> AttemptCheck
+    LogSkip1 --> ExhaustCheck{i >= works.length?}
+    LogSkip2 --> ExhaustCheck
+    LogSkip3 --> ExhaustCheck
 
+    ExhaustCheck -- Yes --> SetExhausted[state.status = exhausted]
+    SetExhausted --> IssueCheck1{未対応の exhausted Issue が存在?}
+    IssueCheck1 -- No --> CreateIssue1[GitHub Issue を1回作成]
+    IssueCheck1 -- Yes --> SkipIssue1[Issue 作成をスキップ]
+    CreateIssue1 --> SaveExhaustedLog1[DATA/logs/YYYY-MM-DD.json 保存\nfinal_status=exhausted]
+    SkipIssue1 --> SaveExhaustedLog1
+    SaveExhaustedLog1 --> PushExhausted1[commit + push（state.json + DATA/logs を同一コミット）]
+    PushExhausted1 --> End3([終了：公開なし])
+
+    ExhaustCheck -- No --> AttemptCheck{attempt >= 3?}
     AttemptCheck -- No --> TryCandidate
-    AttemptCheck -- Yes（i >= length） --> SetExhausted[state.status = exhausted\nGitHub Issue 作成]
-    AttemptCheck -- Yes（3 失敗） --> NoPublish[state.json push\nnext_index 更新]
-    SetExhausted --> End3([終了：公開なし])
-    NoPublish --> End4([終了：公開なし])
+    AttemptCheck -- Yes --> NoPublish[state.json: next_index 更新\nstatus = active]
+    NoPublish --> SaveNoPubLog[DATA/logs/YYYY-MM-DD.json 保存\nfinal_status=no_publication]
+    SaveNoPubLog --> PushNoPub[commit + push（state.json + DATA/logs を同一コミット）]
+    PushNoPub --> End4([終了：公開なし])
 ```
 
 ---
@@ -231,7 +252,9 @@ stateDiagram-v2
     rollback --> active : next_index-- / skip_log 追記\n問題作品をスキップ登録
 
     note right of exhausted
-        GitHub Issue 自動作成
+        active→exhausted 遷移時に
+        GitHub Issue を1回だけ自動作成
+        （未対応Issueがなければ作成）
         管理者の手動対応が必要
     end note
 
