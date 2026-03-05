@@ -486,3 +486,70 @@ Before first deployment:
 - Pin all dependencies to specific versions
 - Monthly dependency audits using GitHub Dependabot
 - Auto-update security patches only
+
+---
+
+## 13. Notes
+
+### 13.1 Google AdSense
+
+全ページの `<head>` 内に以下のスクリプトを必ず挿入する。
+
+```html
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6743751614716161"
+     crossorigin="anonymous"></script>
+```
+
+- Agent 6A (Work Page Generator)・6B (Index/Archive Generator) のテンプレートに組み込む
+- AdSense スクリプトは外部リソースのため、CSP の `script-src` に `https://pagead2.googlesyndication.com` を追加する
+
+### 13.2 フロントエンド設計方針
+
+各ページは CDN を活用したモダンな静的サイトとして構築する。
+
+**採用する CDN リソース（例）:**
+
+| 用途 | CDN |
+|------|-----|
+| CSS フレームワーク | Bootstrap 5（`cdn.jsdelivr.net`）または Tailwind CSS Play CDN |
+| フォント | Google Fonts（Noto Serif / Inter 等） |
+| アイコン | Font Awesome または Heroicons |
+
+**デザイン要件:**
+
+- レスポンシブデザイン（モバイルファースト）
+- セマンティック HTML5（`<article>`, `<header>`, `<nav>`, `<footer>` 等）
+- ダークモード対応（`prefers-color-scheme` メディアクエリ）
+- 適切な `<meta>` OGP タグ（SNS シェア対応）
+- ページ読み込み速度優先：CSS は `<head>` に、JS は `<body>` 末尾または `async`/`defer` で読み込む
+
+**CSP 追加ルール（外部リソース対応）:**
+
+```html
+<meta http-equiv="Content-Security-Policy"
+  content="default-src 'self';
+           script-src 'self' https://pagead2.googlesyndication.com https://cdn.jsdelivr.net 'unsafe-inline';
+           style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
+           font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net;
+           img-src 'self' https:;
+           frame-src https://googleads.g.doubleclick.net;">
+```
+
+### 13.3 サイト言語：英語のみ
+
+**このサイトに表示するすべてのテキストは英語とする。日本語はいかなる形でも表示しない。**
+
+対象範囲:
+
+| 要素 | 内容 |
+|------|------|
+| 作品本文 | 英語翻訳のみ（`translation_en`） |
+| イントロダクション | 英語のみ（`introduction_en`、100–150 words） |
+| ページタイトル・`<title>` | 英語（`title_en`、`author_en`） |
+| ナビゲーション・フッター | 英語 |
+| クレジット・免責事項 | 英語 |
+| アーカイブ・著者ページの見出し | 英語 |
+| `sitemap.xml`・`robots.txt` | 言語非依存（URL のみ） |
+| `DATA/*.json` のメタデータ | `title_ja`・`author_ja` はソースファイルのみに存在し、HTML には一切出力しない |
+
+Section 10（Fixed Decisions）の "Content: English only" と同じ決定を、実装レベルで再確認する。テンプレートエンジンが日本語フィールドを誤って出力しないよう、Agent 6A〜6C は `title_ja`・`author_ja` を参照禁止とする。
