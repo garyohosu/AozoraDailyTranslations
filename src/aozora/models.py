@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from typing import List, Optional
 from urllib.parse import urlparse
 
 
@@ -27,9 +28,9 @@ class WorkEntry:
     title_en: str
     author_en: str
     genre: str
-    title_ja: str | None = None
-    author_ja: str | None = None
-    notes: str | None = None
+    title_ja: Optional[str] = None
+    author_ja: Optional[str] = None
+    notes: Optional[str] = None
 
     def __post_init__(self) -> None:
         if self.genre not in ("poem", "short"):
@@ -58,7 +59,7 @@ class SkipLogEntry:
 class StateJson:
     next_index: int
     status: str
-    skip_log: list[SkipLogEntry]
+    skip_log: List[SkipLogEntry]
 
     @classmethod
     def load(cls, path: str) -> StateJson:
@@ -144,7 +145,7 @@ class QAGateConfig:
     short_r_max: float = 0.95
     poem_r_min: float = 0.18
     poem_r_max: float = 1.20
-    forbidden_phrases: list[str] = field(
+    forbidden_phrases: List[str] = field(
         default_factory=lambda: [
             "translation failed",
             "as an ai",
@@ -157,8 +158,8 @@ class QAGateConfig:
 @dataclass
 class PublishResult:
     work_page_path: str
-    index_paths: list[str]
-    seo_paths: list[str]
+    index_paths: List[str]
+    seo_paths: List[str]
 
 
 @dataclass
@@ -174,7 +175,7 @@ class AttemptLog:
 class RunLog:
     run_date: str
     run_datetime_jst: str
-    attempts: list[AttemptLog]
+    attempts: List[AttemptLog]
     final_status: str
     api_cost_usd: float
 

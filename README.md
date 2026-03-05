@@ -37,9 +37,9 @@ AozoraDailyTranslations/
 
 ### 前提条件
 
-- Python 3.11 以上
+- Python 3.8 以上（素子の実行環境に合わせる）
 - [Codex CLI](https://github.com/openai/codex) インストール済み（フラットレートプラン）
-- openClaw インストール済み（スケジューラー）
+- OpenClaw インストール済み（スケジューラー）
 - GitHub リポジトリの Pages 設定: **Settings → Pages → Source = "GitHub Actions"**
 
 ### インストール
@@ -115,65 +115,24 @@ python -m aozora.run --date 2026-03-05
 openClaw はローカル PC で動作する専用スケジューラーです。
 毎日 JST 09:00 にパイプラインをトリガーします。
 
-### 基本設定手順
+### 基本設定手順（OpenClaw CLI / Linux・WSL向け）
 
-1. **openClaw を起動**してメインメニューを開く
+```bash
+openclaw cron add \
+  --name "AozoraDailyTranslations daily" \
+  --cron "0 9 * * *" \
+  --tz "Asia/Tokyo" \
+  --session isolated \
+  --message "作業ディレクトリ /home/garyo/.openclaw/workspace/AozoraDailyTranslations で python3 -m aozora.run を実行。成功時は生成パスとcommit/push結果を要約、失敗時はエラー要点を3行で通知。"
+```
 
-2. **新規ジョブを作成**: `ジョブ管理` → `新規作成`
-
-3. **スケジュール設定**:
-
-   | 項目 | 設定値 |
-   |------|--------|
-   | ジョブ名 | `AozoraDailyTranslations` |
-   | スケジュール種別 | `毎日` |
-   | 実行時刻 | `09:00` |
-   | タイムゾーン | `Asia/Tokyo (JST)` |
-
-4. **実行コマンド設定**:
-
-   ```
-   実行ファイル : python
-   引数         : -m aozora.run
-   作業ディレクトリ: C:\path\to\AozoraDailyTranslations
-   ```
-
-   または起動スクリプトを用意する場合:
-
-   ```
-   実行ファイル : C:\path\to\AozoraDailyTranslations\scripts\run_daily.bat
-   作業ディレクトリ: C:\path\to\AozoraDailyTranslations
-   ```
-
-   `scripts/run_daily.bat` の例:
-
-   ```bat
-   @echo off
-   cd /d C:\path\to\AozoraDailyTranslations
-   python -m aozora.run >> DATA\logs\openclaw.log 2>&1
-   ```
-
-5. **並行実行の防止**（重要）:
-
-   openClaw の `重複起動防止` オプションを **有効** にする。
-   これにより前回の実行が完了していない場合は新規起動をスキップします。
-   パイプライン内部でも `DATA/run.lock` による排他ロックを取得します（SPEC.md §6.3）。
-
-6. **通知設定**（推奨）:
-
-   | イベント | 通知 |
-   |----------|------|
-   | ジョブ失敗 | メール / openClaw 通知 |
-   | 3日連続で公開なし | メール / openClaw 通知 |
-
-7. **設定を保存して有効化**
+- 重複起動防止は OpenClaw 側設定で有効化推奨
+- パイプライン内部でも `DATA/run.lock` を使った排他制御を維持
 
 ### 動作確認
 
-openClaw のジョブ一覧から `今すぐ実行` を選択し、
-`DATA/logs/YYYY-MM-DD.json` にログが生成されることを確認する。
-
 ```bash
+python3 -m aozora.run --date 2026-03-05
 cat DATA/logs/$(date +%Y-%m-%d).json
 ```
 
