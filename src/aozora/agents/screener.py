@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 import re
 
 import requests
@@ -14,6 +15,9 @@ _PUBLIC_DOMAIN_KEYWORDS = [
     "パブリックドメイン",
     "public domain",
 ]
+
+# 没年フィールドのパターン（青空文庫カードページ HTML 構造: 没年：</td><td>YYYY-MM-DD）
+_DEATH_YEAR_PATTERN = re.compile(r"没年[：:]</td><td>(\d{4})-\d{2}-\d{2}")
 
 # 翻訳作品を示すキーワード（これらがあれば翻訳作品と判断）
 _TRANSLATION_KEYWORDS = [
@@ -82,15 +86,24 @@ class Screener:
             headers={"User-Agent": "AozoraDailyTranslations/1.0"},
         )
         resp.raise_for_status()
-        return resp.text
+        # Aozora Bunko card pages are UTF-8 but HTTP Content-Type omits charset,
+        # so requests defaults to ISO-8859-1. Decode explicitly from raw bytes.
+        return resp.content.decode("utf-8", errors="replace")
 
     def _check_public_domain(self, card_html: str) -> bool:
-        """著作権保護期間満了キーワードが存在すれば True。
+        """著作権保護期間満了キーワードが存在するか、没年から70年超経過していれば True。
         判断できない場合は安全側（False）に倒す。
         """
         lower = card_html.lower()
         for kw in _PUBLIC_DOMAIN_KEYWORDS:
             if kw.lower() in lower:
+                return True
+        # 没年から著作権保護期間（70年）が経過しているか確認
+        match = _DEATH_YEAR_PATTERN.search(card_html)
+        if match:
+            death_year = int(match.group(1))
+            current_year = datetime.datetime.now().year
+            if current_year - death_year > 70:
                 return True
         return False
 
