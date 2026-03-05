@@ -39,7 +39,7 @@ Automatically publish **one** English translation per day from Aozora Bunko publ
   - optional metadata (Aozora IDs, notes)
 
 **Field validation rules for `works.json`:**
-- `aozora_card_url`, `aozora_txt_url`: required; must be valid URLs pointing to `aozora.gr.jp`
+- `aozora_card_url`, `aozora_txt_url`: required; must be valid URLs with `http`/`https` scheme and host `aozora.gr.jp` or any subdomain of `aozora.gr.jp` (e.g., `www.aozora.gr.jp`, `cdn.aozora.gr.jp`)
 - `title_en`, `author_en`: required; non-empty string; max 200 characters
 - `title_ja`, `author_ja`: optional; string
 - `genre`: required; must be exactly `"poem"` or `"short"` (enum)
@@ -223,6 +223,7 @@ Per daily run:
 - **openClaw** triggers the daily workflow (cron schedule)
 - The workflow generates files and **commits/pushes** to the repository
 - **Concurrency:** openClaw must be configured to prevent concurrent runs (e.g., skip if previous run is still active). This prevents `state.json` write conflicts.
+- **Locking implementation (required):** acquire an exclusive lock at startup using `DATA/run.lock`; if lock acquisition fails, terminate the run immediately without side effects.
 - GitHub Pages serves the latest published static content
 - Prefer append-only updates for archives (avoid rewriting older pages unnecessarily)
 
@@ -267,14 +268,36 @@ Per daily run:
 - Push conflicts: attempt to pull and rebase once; if unresolved, fail and alert
 
 **Partial Failures:**
-- If sitemap/robots.txt generation fails but work page succeeds: log warning and proceed
-- If home page generation fails: keep previous version and log error
-- Critical failures (work page generation): abort and do not update state
+- **Critical outputs:** work page generation and push success for the commit that contains the work page.
+- `state.json` may advance only when critical outputs succeed.
+- If sitemap/robots.txt generation fails but work page succeeds: log warning and proceed.
+- If home page generation fails: keep previous version and log warning.
+- Non-critical failures (`sitemap.xml`, `robots.txt`, `index.html`) do not block publication; recover on subsequent runs.
+- If work page generation fails or push fails: treat as candidate failure, do not advance `state.json`.
 
 **Timeout Policy:**
 - Per-agent timeout: 5 minutes (configurable)
 - Total workflow timeout: 20 minutes
 - On timeout: log error, skip candidate, continue to next
+
+### 6.5.1 Unified Error-State Transition Table
+
+This table is normative and overrides ambiguous interpretations in other documents.
+
+| Candidate result (single attempt) | Advance `state.json.next_index` | Append `skip_log` | Continue same-day retry loop | Final status candidate |
+|---|---|---|---|---|
+| Ineligible by Screener | Yes (move to `i+1`) | Yes | Yes (if attempt < 3 and list not exhausted) | `SKIP` |
+| Fetch failed after retries | Yes (move to `i+1`) | Yes | Yes (if attempt < 3 and list not exhausted) | `SKIP` |
+| Translation/Editor/QA failed | Yes (move to `i+1`) | Yes | Yes (if attempt < 3 and list not exhausted) | `SKIP` |
+| Work page generation failed (critical) | No | No (treat as candidate failure before publication) | Yes (if attempt < 3 and list not exhausted) | `FAIL` |
+| Work page generated but push failed (critical) | No | No (publication not established) | Yes (if attempt < 3 and list not exhausted) | `FAIL` |
+| Work page + push succeeded; non-critical files failed (`sitemap.xml`/`robots.txt`/`index.html`) | Yes (publish success path) | No | No (daily run ends on success) | `SUCCESS_WITH_WARNING` |
+| Work page + push succeeded; all files succeeded | Yes (publish success path) | No | No (daily run ends on success) | `SUCCESS` |
+
+Daily run-level outcomes:
+- If one candidate reaches `SUCCESS` or `SUCCESS_WITH_WARNING`: set run `final_status = "published"`.
+- If 3 attempts are consumed with no success: set run `final_status = "no_publication"` and persist advanced `next_index`.
+- If `next_index >= works.length` at decision time: set `status = "exhausted"` and run `final_status = "exhausted"`.
 
 ### 6.6 Performance Requirements
 
@@ -305,7 +328,7 @@ Per daily run:
 
 **For incorrect/problematic publications:**
 1. Manually revert the commit that added the problematic work
-2. Update `DATA/state.json` to decrement `next_index` by 1
+2. Update `DATA/state.json` to set `next_index` to the problematic work index `i` (do not decrement blindly)
 3. Add entry to `skip_log` marking the problematic work
 4. Re-run workflow to publish alternative candidate
 5. Document incident in `DATA/logs/manual-interventions.md`
@@ -469,7 +492,7 @@ Before first deployment:
 
 ### 12.2 Input Validation
 
-- **URL validation:** Ensure `aozora_txt_url` points only to `aozora.gr.jp` domain
+- **URL validation:** Ensure `aozora_txt_url` host is `aozora.gr.jp` or ends with `.aozora.gr.jp`; allow only `http`/`https` scheme.
 - **File size limits:** Reject downloads exceeding 5MB
 - **Content sanitization:** Strip all HTML tags from Aozora source before translation
 

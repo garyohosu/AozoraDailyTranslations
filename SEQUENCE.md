@@ -470,7 +470,7 @@ sequenceDiagram
     Maint->>GH: git revert abc1234<br/>（作品ページ・index.html・sitemap.xml を除去）
     GH-->>Maint: revert commit 作成
 
-    Maint->>GH: state.json を編集<br/>next_index-- （問題作品の index に戻す）<br/>skip_log に追記 {reason="manual rollback: [理由]"}
+    Maint->>GH: state.json を編集<br/>next_index = problematic_index（-- は禁止）<br/>skip_log に追記 {index=problematic_index, reason="manual rollback: [理由]"}
     Maint->>GH: git commit + push
 
     Maint->>GH: DATA/logs/manual-interventions.md に記録<br/>- 日時・対象作品・理由・対応手順

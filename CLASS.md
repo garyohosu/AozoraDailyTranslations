@@ -252,7 +252,7 @@ classDiagram
         +status: str
         +skip_log: list[SkipLogEntry]
     }
-    note for StateJson "status: 'active' | 'exhausted' | 'rollback'"
+    note for StateJson "status: 'active' | 'exhausted'"
 
     class SkipLogEntry {
         +date_jst: str

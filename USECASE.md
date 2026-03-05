@@ -248,8 +248,7 @@ stateDiagram-v2
 
     exhausted --> active : Maintainer が works.json を拡張\nnext_index をリセット
 
-    active --> rollback : Maintainer がロールバック実施
-    rollback --> active : next_index-- / skip_log 追記\n問題作品をスキップ登録
+    %% rollback is a manual procedure, not a runtime state
 
     note right of exhausted
         active→exhausted 遷移時に
@@ -258,11 +257,11 @@ stateDiagram-v2
         管理者の手動対応が必要
     end note
 
-    note right of rollback
-        手順:
+    note right of active
+        Manual rollback procedure (no rollback status in state.json):
         1. 問題コミットを revert
-        2. next_index を -1
-        3. skip_log に追記
+        2. next_index = 問題作品の index i に設定（-- は禁止）
+        3. skip_log に index=i を理由付きで追記
         4. 再実行
     end note
 ```
@@ -282,7 +281,7 @@ flowchart LR
 
     subgraph 障害対応
         B1[GitHub Issue 対応\nexhausted 解消のため works.json 拡張]
-        B2[問題公開のロールバック\n1. commit revert\n2. next_index--\n3. skip_log 追記\n4. 再実行]
+        B2[問題公開のロールバック\n1. commit revert\n2. next_index = problematic_index\n3. skip_log 追記\n4. 再実行]
         B3[state.json 手動修正\ngit history から復元\nnext_index を調整]
         B4[DATA/logs/manual-interventions.md\nにインシデント記録]
     end
