@@ -36,10 +36,51 @@ Automatically publish **one** English translation per day from Aozora Bunko publ
   - `genre` (`poem` or `short`)
   - optional metadata (Aozora IDs, notes)
 
+**Example `DATA/works.json`:**
+```json
+[
+  {
+    "aozora_card_url": "https://www.aozora.gr.jp/cards/000879/card128.html",
+    "aozora_txt_url": "https://www.aozora.gr.jp/cards/000879/files/128_15260.html",
+    "title_en": "The Spider's Thread",
+    "author_en": "Akutagawa Ryunosuke",
+    "title_ja": "蜘蛛の糸",
+    "author_ja": "芥川龍之介",
+    "genre": "short",
+    "notes": "Famous short story from 1918"
+  },
+  {
+    "aozora_card_url": "https://www.aozora.gr.jp/cards/001049/card42618.html",
+    "aozora_txt_url": "https://www.aozora.gr.jp/cards/001049/files/42618_29555.html",
+    "title_en": "Lemon",
+    "author_en": "Kajii Motojiro",
+    "title_ja": "檸檬",
+    "author_ja": "梶井基次郎",
+    "genre": "short"
+  }
+]
+```
+
 - `DATA/state.json` (progress tracker)
   - `next_index`
   - optional `skip_log[]`
   - optional `status` (`active` / `exhausted`)
+
+**Example `DATA/state.json`:**
+```json
+{
+  "next_index": 2,
+  "status": "active",
+  "skip_log": [
+    {
+      "date_jst": "2026-03-01",
+      "index": 0,
+      "card_url": "https://www.aozora.gr.jp/cards/...",
+      "reason": "Translation of foreign work detected"
+    }
+  ]
+}
+```
 
 - Run context
   - execution date (JST)
@@ -49,12 +90,19 @@ Automatically publish **one** English translation per day from Aozora Bunko publ
 
 - Work page (English only)
   - `/works/YYYY-MM-DD-<slug>/index.html`
+  - `<slug>` generation rules:
+    - Convert `title_en` to lowercase
+    - Replace spaces and special characters with hyphens
+    - Remove leading/trailing hyphens
+    - Maximum length: 50 characters
+    - Example: "The Spider's Thread" → "the-spiders-thread"
 
 - Home page (latest + archive)
   - `/index.html` (or generated from template)
 
 - Optional author pages (recommended for SEO)
   - `/authors/<author-slug>/index.html`
+  - `<author-slug>` follows same rules as work slug
 
 - Supporting files
   - `/assets/` (CSS, favicon, etc.)
@@ -93,7 +141,7 @@ Each work page must include a fixed credit block containing:
 - `Source (Japanese text): Aozora Bunko (Public Domain in Japan)`
 - `Work (English/romanized title) / Author (English/romanized name)`
 - `Aozora Bunko card URL`
-- `Input/Proofreading credits: See Aozora Bunko card`
+- `Input & Proofreading: See Aozora Bunko card for volunteer contributors`
 - `English translation license: CC0`
 - Auto-translation disclaimer:
   - e.g., “This translation is automatically generated and may contain errors. Please refer to the original Japanese text for authoritative meaning.”
@@ -120,6 +168,7 @@ Fail and skip if any gate triggers:
   - Compute `R = W_en / max(1, C_ja)`
   - For `short`: fail if `R < 0.28` or `R > 0.95`
   - For `poem`: fail if `R < 0.18` or `R > 1.20`
+  - *(Thresholds are empirically derived from typical translation ratios; adjust based on observed false positives/negatives)*
 - Residual Aozora ruby/annotation artifacts exceed threshold:
   - Count occurrences of `《`, `》`, `｜`, `［＃...］` patterns in final English body
   - Fail if total count > 3
@@ -162,6 +211,65 @@ Per daily run:
 - Persist machine-readable run logs at `DATA/logs/YYYY-MM-DD.json`
 - Each log includes: run date/time (JST), attempted indices (max 3), per-candidate result/reason, selected output path (if success), and final status
 - Keep logs in git history (no deletion by automation)
+
+### 6.5 Error Handling
+
+**Network Errors:**
+- Retry Aozora Bunko text fetches up to 3 times with exponential backoff (1s, 2s, 4s)
+- If all retries fail, log error and skip to next candidate
+
+**GitHub API Errors:**
+- Rate limit exceeded: fail gracefully and log; do not retry that day
+- Push conflicts: attempt to pull and rebase once; if unresolved, fail and alert
+
+**Partial Failures:**
+- If sitemap/robots.txt generation fails but work page succeeds: log warning and proceed
+- If home page generation fails: keep previous version and log error
+- Critical failures (work page generation): abort and do not update state
+
+**Timeout Policy:**
+- Per-agent timeout: 5 minutes (configurable)
+- Total workflow timeout: 20 minutes
+- On timeout: log error, skip candidate, continue to next
+
+### 6.6 Performance Requirements
+
+- **Maximum daily runtime:** 20 minutes per workflow execution
+- **API cost budget:** 
+  - Translation API: $0.50 per work (estimated)
+  - Total monthly budget: $15 (30 days × $0.50)
+- **Timeout settings:**
+  - Text fetch: 60 seconds
+  - Translation: 300 seconds (5 minutes)
+  - HTML generation: 60 seconds
+
+### 6.7 Monitoring & Alerts
+
+- **GitHub Actions notifications:**
+  - Immediate notification on workflow failure
+  - Notification when all 3 candidates fail in a single day
+- **Weekly summary:**
+  - Total works published
+  - Skip count and reasons
+  - API cost summary
+- **Critical alerts:**
+  - Status reaches `exhausted` (notify maintainer to extend `works.json`)
+  - 3 consecutive days with zero publications
+  - API budget exceeds 80% of monthly limit
+
+### 6.8 Rollback Strategy
+
+**For incorrect/problematic publications:**
+1. Manually revert the commit that added the problematic work
+2. Update `DATA/state.json` to decrement `next_index` by 1
+3. Add entry to `skip_log` marking the problematic work
+4. Re-run workflow to publish alternative candidate
+5. Document incident in `DATA/logs/manual-interventions.md`
+
+**For corrupted state:**
+1. Restore `DATA/state.json` from git history
+2. Verify consistency between state and published works
+3. Manually adjust `next_index` if needed
 
 ---
 
@@ -210,13 +318,26 @@ Responsibilities:
 Output: `PASS` / `FAIL` + reason + metrics
 
 ### Agent 6 — Publisher
-Responsibilities:
-- Generate HTML pages and site updates:
-  - work page
-  - home page archive
-  - optional author pages
-  - sitemap/robots
-Outputs: static files under `/works`, `/index.html`, etc.
+
+The Publisher is divided into specialized sub-agents for clarity:
+
+**Agent 6A — Work Page Generator**
+- Generate individual work HTML page
+- Apply templates with metadata injection
+- Ensure proper HTML escaping for XSS prevention
+- Output: `/works/YYYY-MM-DD-<slug>/index.html`
+
+**Agent 6B — Index/Archive Generator**
+- Update home page with latest work
+- Maintain chronological archive list
+- Generate author index pages
+- Output: `/index.html`, `/authors/<slug>/index.html`
+
+**Agent 6C — Sitemap/SEO Generator**
+- Generate `sitemap.xml` with all published works
+- Update `robots.txt`
+- Ensure proper canonical URLs
+- Output: `/sitemap.xml`, `/robots.txt`
 
 ---
 
@@ -224,11 +345,11 @@ Outputs: static files under `/works`, `/index.html`, etc.
 
 1. Orchestrator selects candidate (from `works.json` by `state.json` index)
 2. Screener checks eligibility
-3. Fetcher downloads + normalizes Japanese text
+3. Fetcher downloads + normalizes Japanese text (with retry logic)
 4. Translator produces first-pass English
 5. Editor refines the English
-6. QA runs gates; on FAIL -> retry next candidate (max 3)
-7. Publisher generates site files
+6. QA runs gates; on FAIL -> retry next candidate (up to 3 total attempts per day)
+7. Publisher generates site files (Agent 6A → 6B → 6C)
 8. Orchestrator updates state and pushes changes
 
 ---
@@ -252,9 +373,68 @@ Required:
 - Output license: **CC0** for English translations
 - Cadence: **1 short story / poem per day**
 - Candidate selection: **curated list** (works.json), sequential consumption
-- Daily retries: **up to 3 candidates**
-- End-of-list behavior: **no wrap**; mark state as `exhausted` until list is extended
+- Daily retries: **up to 3 candidates per day**
+- End-of-list behavior: **no wrap**; mark state as `exhausted` until list is manually extended (see rollback strategy)
 - Work page includes:
   - 100–150 word introduction
   - translation body
   - mandatory credits + auto-translation disclaimer
+
+---
+
+## 11. Testing Strategy
+
+### 11.1 Unit Tests
+
+Each agent must have isolated unit tests:
+- **Agent 1 (Screener):** Test with known public-domain and problematic works
+- **Agent 2 (Fetcher):** Test with sample zip/txt/html files
+- **Agent 3-4 (Translator/Editor):** Test with known Japanese passages
+- **Agent 5 (QA):** Test quality gates with edge cases
+- **Agent 6A-C (Publisher):** Test HTML generation, escaping, and sitemap structure
+
+### 11.2 Integration Tests
+
+End-to-end workflow tests:
+- Full pipeline with 3 sample works (1 short story, 1 poem, 1 ineligible)
+- State persistence and skip log accuracy
+- Retry logic validation
+
+### 11.3 Pre-Production Checklist
+
+Before first deployment:
+- [ ] Validate all quality gates with 10 diverse works
+- [ ] Confirm HTML escaping prevents XSS
+- [ ] Test exhausted state behavior
+- [ ] Verify sitemap.xml validity
+- [ ] Test rollback procedure
+
+---
+
+## 12. Security Considerations
+
+### 12.1 Secret Management
+
+- **GitHub Token:** Use repository secrets, never commit tokens
+- **API Keys:** Store in GitHub Actions secrets with minimal required permissions
+- Rotate tokens quarterly
+
+### 12.2 Input Validation
+
+- **URL validation:** Ensure `aozora_txt_url` points only to `aozora.gr.jp` domain
+- **File size limits:** Reject downloads exceeding 5MB
+- **Content sanitization:** Strip all HTML tags from Aozora source before translation
+
+### 12.3 Output Security
+
+- **XSS Prevention:** 
+  - HTML-escape all user-provided content (`title_en`, `author_en`)
+  - Use templating engine with auto-escaping (e.g., Jinja2 with autoescape)
+- **Path traversal:** Validate slug generation cannot create paths outside `/works`
+- **Content Security Policy:** Add CSP headers via meta tags in HTML templates
+
+### 12.4 Dependency Security
+
+- Pin all dependencies to specific versions
+- Monthly dependency audits using GitHub Dependabot
+- Auto-update security patches only
