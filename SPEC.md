@@ -4,8 +4,10 @@ Repository: https://github.com/garyohosu/AozoraDailyTranslations.git
 Site name: **Aozora Daily Translations**  
 Publishing: **GitHub Pages**  
 Content: **English only in rendered pages** (Japanese metadata may exist in source JSON only)  
-Translation license (English output): **CC0**  
+Translation license (English output): **CC0**
 Cadence: **1 work per day** (short stories / poems)
+Translation engine: **Codex CLI (flat-rate plan) via `exec`, or local LLM as fallback**
+Scheduler: **openClaw**
 
 ---
 
@@ -35,6 +37,14 @@ Automatically publish **one** English translation per day from Aozora Bunko publ
   - `title_ja`, `author_ja` (optional metadata; not rendered on pages)
   - `genre` (`poem` or `short`)
   - optional metadata (Aozora IDs, notes)
+
+**Field validation rules for `works.json`:**
+- `aozora_card_url`, `aozora_txt_url`: required; must be valid URLs pointing to `aozora.gr.jp`
+- `title_en`, `author_en`: required; non-empty string; max 200 characters
+- `title_ja`, `author_ja`: optional; string
+- `genre`: required; must be exactly `"poem"` or `"short"` (enum)
+- `notes`: optional; string
+- On validation failure of any entry: log error and skip that entry at startup; do not abort entire run
 
 **Example `DATA/works.json`:**
 ```json
@@ -96,6 +106,7 @@ Automatically publish **one** English translation per day from Aozora Bunko publ
     - Remove leading/trailing hyphens
     - Maximum length: 50 characters
     - Example: "The Spider's Thread" → "the-spiders-thread"
+  - **Slug collision:** Because the path includes `YYYY-MM-DD`, same-title works published on different days do not collide. During testing/manual runs on the same date, append `-2`, `-3`, etc. if collision is detected.
 
 - Home page (latest + archive)
   - `/index.html` (or generated from template)
@@ -107,7 +118,7 @@ Automatically publish **one** English translation per day from Aozora Bunko publ
 - Supporting files
   - `/assets/` (CSS, favicon, etc.)
   - `/sitemap.xml`
-  - `/robots.txt`
+  - `/robots.txt` (default: `User-agent: *` / `Allow: /` / `Sitemap: <base_url>/sitemap.xml`)
   - updated `DATA/state.json`
 
 ---
@@ -134,7 +145,13 @@ Skip a candidate if **any** is true:
 
 **Safety bias:** if uncertain, skip.
 
-### 4.3 Mandatory Credits (on every work page)
+### 4.3 CC0 License Rationale
+
+The English translation is generated entirely by AI (Codex CLI or local LLM) with no human authorship contribution. Under US copyright law, AI-generated output without human creative selection or arrangement is not eligible for copyright protection. Therefore, the English translations produced by this pipeline are released under **CC0 1.0 Universal** as a precautionary dedication, making the absence of copyright claims explicit.
+
+This interpretation is applied per-project policy. Maintainers should reassess if human editorial effort becomes substantial.
+
+### 4.4 Mandatory Credits (on every work page)
 
 Each work page must include a fixed credit block containing:
 
@@ -169,6 +186,7 @@ Fail and skip if any gate triggers:
   - For `short`: fail if `R < 0.28` or `R > 0.95`
   - For `poem`: fail if `R < 0.18` or `R > 1.20`
   - *(Thresholds are empirically derived from typical translation ratios; adjust based on observed false positives/negatives)*
+  - **Validation requirement:** Before first deployment, run the quality gates against at least 15 diverse works (mix of poems and short stories) and confirm false-positive rate < 10%. Record results in `DATA/threshold-calibration.md`.
 - Residual Aozora ruby/annotation artifacts exceed threshold:
   - Count occurrences of `《`, `》`, `｜`, `［＃...］` patterns in final English body
   - Fail if total count > 3
@@ -177,7 +195,7 @@ Fail and skip if any gate triggers:
 
 ### 5.2 Required “Content Gates”
 
-- Generate a short **Introduction** (100–150 words) per work for SEO and context
+- Generate a short **Introduction** (100–150 words) per work for SEO and context — this is the responsibility of **Agent 3 (Translator)**, generated alongside the translation body
 - Do not let the model invent title/author; they are injected from metadata
 
 ---
@@ -202,7 +220,9 @@ Per daily run:
 
 ### 6.3 Publishing Policy
 
-- GitHub Actions generates files and **commits/pushes** to the repository
+- **openClaw** triggers the daily workflow (cron schedule)
+- The workflow generates files and **commits/pushes** to the repository
+- **Concurrency:** openClaw must be configured to prevent concurrent runs (e.g., skip if previous run is still active). This prevents `state.json` write conflicts.
 - GitHub Pages serves the latest published static content
 - Prefer append-only updates for archives (avoid rewriting older pages unnecessarily)
 
@@ -211,6 +231,30 @@ Per daily run:
 - Persist machine-readable run logs at `DATA/logs/YYYY-MM-DD.json`
 - Each log includes: run date/time (JST), attempted indices (max 3), per-candidate result/reason, selected output path (if success), and final status
 - Keep logs in git history (no deletion by automation)
+
+**Log schema example:**
+```json
+{
+  "run_date": "2026-03-05",
+  "run_datetime_jst": "2026-03-05T09:01:23+09:00",
+  "attempts": [
+    {
+      "index": 2,
+      "card_url": "https://www.aozora.gr.jp/cards/...",
+      "result": "SKIP",
+      "reason": "Translation of foreign work detected"
+    },
+    {
+      "index": 3,
+      "card_url": "https://www.aozora.gr.jp/cards/...",
+      "result": "SUCCESS",
+      "output_path": "/works/2026-03-05-the-spiders-thread/index.html"
+    }
+  ],
+  "final_status": "published",
+  "api_cost_usd": 0.42
+}
+```
 
 ### 6.5 Error Handling
 
@@ -235,9 +279,9 @@ Per daily run:
 ### 6.6 Performance Requirements
 
 - **Maximum daily runtime:** 20 minutes per workflow execution
-- **API cost budget:** 
-  - Translation API: $0.50 per work (estimated)
-  - Total monthly budget: $15 (30 days × $0.50)
+- **API cost budget:**
+  - Translation: Codex CLI flat-rate plan (no per-token cost); local LLM fallback is free
+  - Estimated monthly cost: $0 for translation (flat-rate); other API costs TBD
 - **Timeout settings:**
   - Text fetch: 60 seconds
   - Translation: 300 seconds (5 minutes)
@@ -245,7 +289,7 @@ Per daily run:
 
 ### 6.7 Monitoring & Alerts
 
-- **GitHub Actions notifications:**
+- **openClaw notifications:**
   - Immediate notification on workflow failure
   - Notification when all 3 candidates fail in a single day
 - **Weekly summary:**
@@ -253,7 +297,7 @@ Per daily run:
   - Skip count and reasons
   - API cost summary
 - **Critical alerts:**
-  - Status reaches `exhausted` (notify maintainer to extend `works.json`)
+  - Status reaches `exhausted`: automatically open a GitHub Issue titled "works.json exhausted — manual extension required" and notify maintainer
   - 3 consecutive days with zero publications
   - API budget exceeds 80% of monthly limit
 
@@ -301,10 +345,13 @@ Outputs: `raw_text_ja`, `clean_text_ja`, metrics
 
 ### Agent 3 — Translator (First Pass)
 Responsibilities:
-- Translate `clean_text_ja` into English
+- Translate `clean_text_ja` into English using **Codex CLI (flat-rate plan) via `exec`**; fall back to **local LLM** if Codex CLI is unavailable or returns an error
 - Preserve paragraph structure
-- No fabrication
-Output: `translation_en`
+- Generate the 100–150 word Introduction alongside the translation
+- No fabrication; title/author are injected from metadata, not generated
+Output: `translation_en`, `introduction_en`
+
+**Agent data passing:** Agents exchange data via structured JSON files written to a temporary working directory for the current run (e.g., `tmp/run-YYYY-MM-DD/`). Exact schema to be defined in detailed design.
 
 ### Agent 4 — Editor (Readability)
 Responsibilities:
@@ -362,7 +409,8 @@ Required:
 - `DATA/state.json` (progress tracker)
 - `PROMPTS/` (agent prompts; to be defined in detailed design)
 - `templates/` (HTML templates; to be defined in detailed design)
-- `.github/workflows/daily.yml` (cron workflow; to be defined in detailed design)
+- openClaw schedule configuration (cron trigger; to be defined in detailed design)
+- `DATA/threshold-calibration.md` (quality gate calibration results; populated pre-deployment)
 
 ---
 
@@ -403,7 +451,7 @@ End-to-end workflow tests:
 ### 11.3 Pre-Production Checklist
 
 Before first deployment:
-- [ ] Validate all quality gates with 10 diverse works
+- [ ] Validate all quality gates with 15 diverse works (see `DATA/threshold-calibration.md`)
 - [ ] Confirm HTML escaping prevents XSS
 - [ ] Test exhausted state behavior
 - [ ] Verify sitemap.xml validity
