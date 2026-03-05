@@ -1,4 +1,4 @@
-"""Agent 1 — Screener: eligibility checks for Aozora Bunko works."""
+"""Agent 1: eligibility checks for Aozora Bunko works."""
 
 from __future__ import annotations
 
@@ -9,75 +9,53 @@ import requests
 
 from aozora.models import ScreenResult, WorkEntry
 
-# 著作権保護期間満了を示す青空文庫のキーワード
 _PUBLIC_DOMAIN_KEYWORDS = [
     "著作権保護期間満了",
     "パブリックドメイン",
     "public domain",
 ]
 
-# 没年フィールドのパターン（青空文庫カードページ HTML 構造: 没年：</td><td>YYYY-MM-DD）
-_DEATH_YEAR_PATTERN = re.compile(r"没年[：:]</td><td>(\d{4})-\d{2}-\d{2}")
+_DEATH_YEAR_PATTERN = re.compile(r"没年[^0-9]*(\d{4})")
 
-# 翻訳作品を示すキーワード（これらがあれば翻訳作品と判断）
 _TRANSLATION_KEYWORDS = [
-    "翻訳者",
-    "翻訳：",
-    "翻訳: ",
+    "翻訳",
     "訳者",
-    "底本の底本",
+    "翻案",
+    "外国作品",
 ]
 
-# 注釈過多の閾値
 _ANNOTATION_THRESHOLD = 20
-
 _ANNOTATION_PATTERN = re.compile(r"［＃[^］]*］")
-
 _REQUEST_TIMEOUT = 30
 
 
 class Screener:
     def screen(self, candidate: WorkEntry) -> ScreenResult:
-        """ScreenResult(status="ELIGIBLE"|"INELIGIBLE", reason=...) を返す。
-        ネットワークエラーや判断不能の場合は safety bias で INELIGIBLE。
-        """
+        """Return eligibility with a safety-biased rejection policy."""
         try:
             card_html = self._fetch_card_html(candidate.aozora_card_url)
         except Exception as exc:
-            return ScreenResult(
-                status="INELIGIBLE",
-                reason=f"Card fetch error: {exc}",
-            )
+            return ScreenResult(status="INELIGIBLE", reason=f"Card fetch error: {exc}")
 
         if not self._check_public_domain(card_html):
             return ScreenResult(
                 status="INELIGIBLE",
                 reason="Public domain status could not be confirmed",
             )
-
         if self._detect_translation_work(card_html):
             return ScreenResult(
                 status="INELIGIBLE",
                 reason="Translation of a foreign work detected",
             )
-
         if self._check_annotation_heavy(card_html):
             return ScreenResult(
                 status="INELIGIBLE",
                 reason="Content dominated by annotations",
             )
-
         if self._check_us_distribution_risk(card_html):
-            return ScreenResult(
-                status="INELIGIBLE",
-                reason="US distribution risk detected",
-            )
+            return ScreenResult(status="INELIGIBLE", reason="US distribution risk detected")
 
         return ScreenResult(status="ELIGIBLE", reason="")
-
-    # ------------------------------------------------------------------
-    # 内部チェック
-    # ------------------------------------------------------------------
 
     def _fetch_card_html(self, card_url: str) -> str:
         resp = requests.get(
@@ -86,41 +64,36 @@ class Screener:
             headers={"User-Agent": "AozoraDailyTranslations/1.0"},
         )
         resp.raise_for_status()
-        # Aozora Bunko card pages are UTF-8 but HTTP Content-Type omits charset,
-        # so requests defaults to ISO-8859-1. Decode explicitly from raw bytes.
         return resp.content.decode("utf-8", errors="replace")
 
     def _check_public_domain(self, card_html: str) -> bool:
-        """著作権保護期間満了キーワードが存在するか、没年から70年超経過していれば True。
-        判断できない場合は安全側（False）に倒す。
-        """
         lower = card_html.lower()
-        for kw in _PUBLIC_DOMAIN_KEYWORDS:
-            if kw.lower() in lower:
-                return True
-        # 没年から著作権保護期間（70年）が経過しているか確認
+        if any(kw.lower() in lower for kw in _PUBLIC_DOMAIN_KEYWORDS):
+            return True
+
         match = _DEATH_YEAR_PATTERN.search(card_html)
         if match:
             death_year = int(match.group(1))
-            current_year = datetime.datetime.now().year
-            if current_year - death_year > 70:
-                return True
+            return (datetime.datetime.now().year - death_year) > 70
         return False
 
     def _detect_translation_work(self, card_html: str) -> bool:
-        """翻訳者・訳者が明記されていれば外国語翻訳と判断して True。"""
-        for kw in _TRANSLATION_KEYWORDS:
-            if kw in card_html:
-                return True
-        return False
+        return any(kw in card_html for kw in _TRANSLATION_KEYWORDS)
 
     def _check_annotation_heavy(self, card_html: str) -> bool:
-        """注釈記法 ［＃...］ の出現数が閾値を超えれば True。"""
-        count = len(_ANNOTATION_PATTERN.findall(card_html))
-        return count > _ANNOTATION_THRESHOLD
+        return len(_ANNOTATION_PATTERN.findall(card_html)) > _ANNOTATION_THRESHOLD
 
     def _check_us_distribution_risk(self, card_html: str) -> bool:
-        """US 配布リスクフラグ。現時点では簡易実装（常に False）。
-        将来的に青空文庫の US 権利情報フィールドを参照する。
-        """
-        return False
+        text = card_html.lower()
+        risk_patterns = [
+            r"united states",
+            r"\busa\b",
+            r"u\.s\.",
+            r"米国",
+            r"アメリカ",
+            r"rights reserved",
+            r"distribution.*(restricted|prohibited)",
+            r"copyright.*(remain|reserved)",
+        ]
+        return any(re.search(p, text) for p in risk_patterns)
+

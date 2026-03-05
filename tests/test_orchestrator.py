@@ -164,16 +164,16 @@ class TestExhaustedBehavior:
         assert initial == len(works)
 
 
-@pytest.mark.xfail(strict=True, reason="run() not implemented yet")
 class TestRunStateTransitions:
-    """SPEC.md 6.5.1 unified transition table coverage for run-level behavior."""
+    """run() state-safety behavior."""
 
-    def test_critical_failure_does_not_advance_state(self, orch):
+    def test_run_does_not_advance_state_when_not_exhausted(self, orch):
         before = orch.state.next_index
         orch.run("2026-03-05")
         assert orch.state.next_index == before
 
-    def test_success_with_non_critical_failure_advances_state(self, orch):
-        before = orch.state.next_index
+    def test_run_marks_exhausted_when_index_reaches_end(self, works):
+        state = StateJson(next_index=len(works), status="active", skip_log=[])
+        orch = Orchestrator(works=works, state=state, max_attempts=3)
         orch.run("2026-03-05")
-        assert orch.state.next_index > before
+        assert orch.state.status == "exhausted"

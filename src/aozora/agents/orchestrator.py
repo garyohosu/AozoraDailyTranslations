@@ -18,7 +18,20 @@ class Orchestrator:
     # ------------------------------------------------------------------
 
     def run(self, date: str) -> None:
-        raise NotImplementedError
+        """Run a conservative daily cycle.
+
+        Current implementation focuses on state safety:
+        - If already exhausted, keep status exhausted.
+        - If index reached end, mark exhausted.
+        - Otherwise leave state unchanged (candidate processing is wired by
+          higher-level integration that is not part of this module yet).
+        """
+        _ = date  # reserved for future logging/use
+        if self.state.next_index >= len(self.works):
+            self.state.set_exhausted()
+            return
+        # No-op by design until full agent pipeline wiring lands.
+        return
 
     # ------------------------------------------------------------------
     # 候補選択

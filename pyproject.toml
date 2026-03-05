@@ -8,7 +8,7 @@ version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
     "requests",
-    "chardet",
+    "chardet>=5,<6",
     "beautifulsoup4",
 ]
 
@@ -22,7 +22,10 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "-v --tb=short --cov=aozora --cov-report=term-missing --cov-report=xml"
+addopts = "-v --tb=short -m \"not integration\" --cov=aozora --cov-report=term-missing --cov-report=xml"
+markers = [
+    "integration: real network calls to Aozora Bunko (deselect with -m 'not integration')",
+]
 
 [tool.coverage.run]
 source = ["src/aozora"]
