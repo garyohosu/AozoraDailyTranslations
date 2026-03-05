@@ -42,6 +42,8 @@ DATA = ROOT / "DATA"
 LOGS = DATA / "logs"
 WORKS_DIR = ROOT / "works"
 
+AOZORA_DEFAULT_SOURCE = "https://www.aozora.gr.jp/index_pages/person879.html"  # 芥川龍之介
+AUTO_FILL_TARGET = int(os.environ.get("AOZORA_WORKS_TARGET", "200"))
 
 def _today_jst() -> str:
     return dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat()
@@ -89,10 +91,121 @@ def _load_works() -> list[WorkEntry]:
     return [WorkEntry(**w) for w in raw]
 
 
+def _save_works(works: list[WorkEntry]) -> None:
+    payload = []
+    for w in works:
+        payload.append(
+            {
+                "aozora_card_url": w.aozora_card_url,
+                "aozora_txt_url": w.aozora_txt_url,
+                "title_en": w.title_en,
+                "author_en": w.author_en,
+                "title_ja": w.title_ja,
+                "author_ja": w.author_ja,
+                "genre": w.genre,
+            }
+        )
+    (DATA / "works.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
 def _slugify(text: str) -> str:
     s = text.lower()
     s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
     return s or "untitled"
+
+
+def _guess_genre(title_ja: str) -> str:
+    t = title_ja or ""
+    poem_hints = ["詩", "短歌", "俳句", "句集"]
+    return "poem" if any(h in t for h in poem_hints) else "short"
+
+
+def _extract_card_urls_from_person_page(url: str) -> list[str]:
+    r = requests.get(url, timeout=30, headers={"User-Agent": "AozoraDailyTranslations/1.0"})
+    r.raise_for_status()
+    html = r.content.decode("utf-8", errors="ignore")
+    soup = BeautifulSoup(html, "html.parser")
+    out = []
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if "/cards/" in href and re.search(r"card\d+\.html$", href):
+            out.append(requests.compat.urljoin(url, href))
+    # preserve order + dedupe
+    seen = set()
+    uniq = []
+    for c in out:
+        if c in seen:
+            continue
+        seen.add(c)
+        uniq.append(c)
+    return uniq
+
+
+def _build_work_from_card(card_url: str):
+    r = requests.get(card_url, timeout=30, headers={"User-Agent": "AozoraDailyTranslations/1.0"})
+    r.raise_for_status()
+    html = r.content.decode("utf-8", errors="ignore")
+    soup = BeautifulSoup(html, "html.parser")
+
+    title_tag = soup.find("h1")
+    author_tag = soup.find("h2")
+    title_ja = (title_tag.get_text(" ", strip=True) if title_tag else "").strip()
+    author_ja = (author_tag.get_text(" ", strip=True) if author_tag else "").strip()
+
+    txt_url = ""
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if "/files/" in href and href.endswith(".html"):
+            txt_url = requests.compat.urljoin(card_url, href)
+            break
+    if not txt_url:
+        return None
+
+    if not title_ja:
+        title_ja = "Untitled"
+    if not author_ja:
+        author_ja = "Unknown"
+
+    return WorkEntry(
+        aozora_card_url=card_url,
+        aozora_txt_url=txt_url,
+        title_en=title_ja,
+        author_en=author_ja,
+        title_ja=title_ja,
+        author_ja=author_ja,
+        genre=_guess_genre(title_ja),
+    )
+
+
+def _autofill_works_if_needed(target_count: int = AUTO_FILL_TARGET) -> None:
+    works = _load_works()
+    if len(works) >= target_count:
+        return
+
+    existing_cards = {w.aozora_card_url for w in works}
+    cards = _extract_card_urls_from_person_page(AOZORA_DEFAULT_SOURCE)
+
+    for card in cards:
+        if len(works) >= target_count:
+            break
+        if card in existing_cards:
+            continue
+        err = None
+        try:
+            w = _build_work_from_card(card)
+        except Exception as exc:
+            w = None
+            err = exc
+        if not w:
+            _ = err  # keep loop resilient for noisy source pages
+            continue
+        works.append(w)
+        existing_cards.add(w.aozora_card_url)
+
+    _save_works(works)
 
 
 def _fetch_clean_ja(txt_url: str, timeout: int = 30) -> str:
@@ -248,6 +361,7 @@ def _write_index() -> None:
 
 def run(date: str) -> dict:
     _ensure_data_files()
+    _autofill_works_if_needed(AUTO_FILL_TARGET)
     works = _load_works()
     state = StateJson.load(str(DATA / "state.json"))
 
