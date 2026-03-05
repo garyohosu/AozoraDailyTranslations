@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "aozora-daily-translations"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "requests",
+    "chardet",
+    "beautifulsoup4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.4",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --tb=short --cov=aozora --cov-report=term-missing --cov-report=xml"
+
+[tool.coverage.run]
+source = ["src/aozora"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+fail_under = 0   # 実装前は 0%; 実装が進んだら引き上げる
+
+[tool.ruff]
+src = ["src"]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "S",   # flake8-bandit (security)
+    "T20", # flake8-print
+]
+ignore = [
+    "S101",  # assert は tests で許容
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**"                      = ["S101", "T20"]
+"tools/**"                      = ["T20", "S", "E501"]
+"src/aozora/generators/*.py"    = ["E501"]  # HTML テンプレートは長行を許容
+
+[tool.setuptools.packages.find]
+where = ["src"]

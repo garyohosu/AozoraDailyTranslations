@@ -1,4 +1,4 @@
-﻿"""Tests for Agent 0 窶・Orchestrator state management (SPEC.md ﾂｧ6.1/ﾂｧ6.2, CLASS.md ﾂｧ1)."""
+"""Tests for Agent 0 窶・Orchestrator state management (SPEC.md ﾂｧ6.1/ﾂｧ6.2, CLASS.md ﾂｧ1)."""
 
 from __future__ import annotations
 

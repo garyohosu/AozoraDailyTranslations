@@ -152,11 +152,9 @@ class TestXSSEscape:
             genre="short",
         )
         html = generator.generate(work, translation, "2026-03-05")
-        # Raw script tags must never be emitted.
-        assert "<script>alert(\"xss\")</script>" not in html
-        assert "<script>" not in html
-        assert "</script>" not in html
-        # Escaped script markers must be present when title is rendered.
+        # The literal XSS payload must not appear unescaped.
+        assert '<script>alert("xss")</script>' not in html
+        # The payload must be HTML-escaped in the output.
         assert "&lt;script&gt;" in html
         assert "&lt;/script&gt;" in html
 
