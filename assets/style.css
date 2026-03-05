@@ -1,0 +1,5 @@
+body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
+.site-brand { font-family: 'Libre Baskerville', serif; letter-spacing: .2px; }
+.work-card { border: 1px solid #eceff3; border-radius: 14px; }
+.work-card:hover { box-shadow: 0 8px 24px rgba(21, 26, 35, 0.08); }
+.translation p { line-height: 1.85; }
