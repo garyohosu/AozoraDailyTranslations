@@ -3,7 +3,7 @@
 Repository: https://github.com/garyohosu/AozoraDailyTranslations.git  
 Site name: **Aozora Daily Translations**  
 Publishing: **GitHub Pages**  
-Content: **English only** (no Japanese text displayed)  
+Content: **English only in rendered pages** (Japanese metadata may exist in source JSON only)  
 Translation license (English output): **CC0**  
 Cadence: **1 work per day** (short stories / poems)
 
@@ -31,13 +31,15 @@ Automatically publish **one** English translation per day from Aozora Bunko publ
 - `DATA/works.json` (candidate list, curated)
   - `aozora_card_url` (bibliographic card URL)
   - `aozora_txt_url` (text source URL; zip/txt/html)
-  - `title_ja`, `author_ja`
+  - `title_en`, `author_en` (required for page display; English or romanized)
+  - `title_ja`, `author_ja` (optional metadata; not rendered on pages)
   - `genre` (`poem` or `short`)
   - optional metadata (Aozora IDs, notes)
 
 - `DATA/state.json` (progress tracker)
-  - next candidate index
-  - skip history (optional)
+  - `next_index`
+  - optional `skip_log[]`
+  - optional `status` (`active` / `exhausted`)
 
 - Run context
   - execution date (JST)
@@ -71,6 +73,7 @@ A work can be processed only if **all** are true:
 - Aozora Bunko card indicates the work is **public domain in Japan** (copyright expired)
 - Content type is **short story** or **poem**
 - Source text can be fetched and parsed from Aozora Bunko distribution (zip/txt/html)
+- Distribution is legally safe for public web delivery on GitHub Pages (at minimum, no unresolved rights risk in the United States); if not confidently verifiable, do not publish
 
 ### 4.2 Exclusion Rules (must be excluded / skipped)
 
@@ -79,6 +82,7 @@ Skip a candidate if **any** is true:
 - The work is a **Japanese translation of a foreign work** (translation-right risk)
 - The content is dominated by annotations/commentary rather than the main text
 - The copyright status cannot be determined reliably from the card
+- Legal status for GitHub Pages distribution outside Japan (especially US access) is unclear
 
 **Safety bias:** if uncertain, skip.
 
@@ -87,7 +91,7 @@ Skip a candidate if **any** is true:
 Each work page must include a fixed credit block containing:
 
 - `Source (Japanese text): Aozora Bunko (Public Domain in Japan)`
-- `Work (Japanese title) / Author (Japanese name)`
+- `Work (English/romanized title) / Author (English/romanized name)`
 - `Aozora Bunko card URL`
 - `Input/Proofreading credits: See Aozora Bunko card`
 - `English translation license: CC0`
@@ -108,15 +112,21 @@ Primary failure modes for daily automation:
 
 Fail and skip if any gate triggers:
 
-- Paragraph count mismatch: Japanese vs English deviates beyond an acceptable threshold
+- Paragraph count mismatch:
+  - Let `P_ja` = Japanese paragraph count and `P_en` = English paragraph count
+  - Fail if `abs(P_en - P_ja) > max(2, ceil(0.15 * P_ja))`
 - Length anomaly:
-  - too short (likely missing content)
-  - too long (likely duplication / runaway)
-- Residual Aozora ruby/annotation artifacts exceed threshold (e.g., excessive `《》`, `｜`)
+  - Let `C_ja` = Japanese character count (normalized) and `W_en` = English word count
+  - Compute `R = W_en / max(1, C_ja)`
+  - For `short`: fail if `R < 0.28` or `R > 0.95`
+  - For `poem`: fail if `R < 0.18` or `R > 1.20`
+- Residual Aozora ruby/annotation artifacts exceed threshold:
+  - Count occurrences of `《`, `》`, `｜`, `［＃...］` patterns in final English body
+  - Fail if total count > 3
 - Forbidden boilerplate appears:
   - “translation failed”, “as an AI”, “I can’t”, etc.
 
-### 5.2 Recommended “Content Gates”
+### 5.2 Required “Content Gates”
 
 - Generate a short **Introduction** (100–150 words) per work for SEO and context
 - Do not let the model invent title/author; they are injected from metadata
@@ -128,22 +138,30 @@ Fail and skip if any gate triggers:
 ### 6.1 Progress Tracking
 
 - `DATA/state.json` stores:
-  - next index into `DATA/works.json`
-  - optional skip log with date + reason
-- On success: increment index and persist state
-- On failure: try next candidate(s) within the same run
+  - `next_index` (next candidate index into `DATA/works.json`)
+  - optional `skip_log[]` entries: `date_jst`, `index`, `card_url`, `reason`
+  - optional `status` (`active` or `exhausted`)
+- On success at index `i`: set `next_index = i + 1` and persist state
+- On ineligible/fail at index `i`: append skip log and try `i + 1` within the same run
+- If `next_index >= works.length`: set `status = exhausted` and publish nothing until `works.json` is extended manually (no automatic wrap)
 
 ### 6.2 Retry Policy
 
 Per daily run:
 - attempt up to **3 candidates**
-- if all fail, publish nothing that day and keep logs
+- if all fail, publish nothing that day, persist advanced `next_index`, and keep logs
 
 ### 6.3 Publishing Policy
 
 - GitHub Actions generates files and **commits/pushes** to the repository
 - GitHub Pages serves the latest published static content
 - Prefer append-only updates for archives (avoid rewriting older pages unnecessarily)
+
+### 6.4 Logging Policy
+
+- Persist machine-readable run logs at `DATA/logs/YYYY-MM-DD.json`
+- Each log includes: run date/time (JST), attempted indices (max 3), per-candidate result/reason, selected output path (if success), and final status
+- Keep logs in git history (no deletion by automation)
 
 ---
 
@@ -163,6 +181,7 @@ Outputs: generated site files, updated `state.json`, run logs
 Responsibilities:
 - Verify public-domain status from Aozora card
 - Detect translation-work risk and annotation-heavy works
+- Verify distribution-risk gate for public web delivery (including US-rights uncertainty checks)
 Output: `ELIGIBLE` or `INELIGIBLE` + reason
 
 ### Agent 2 — Fetcher/Normalizer
@@ -229,10 +248,12 @@ Required:
 ## 10. Fixed Decisions (Locked for Detailed Design)
 
 - Content: **English only**
+- Rendered pages contain **no Japanese text** (Japanese metadata may remain in `DATA/*.json`)
 - Output license: **CC0** for English translations
 - Cadence: **1 short story / poem per day**
 - Candidate selection: **curated list** (works.json), sequential consumption
 - Daily retries: **up to 3 candidates**
+- End-of-list behavior: **no wrap**; mark state as `exhausted` until list is extended
 - Work page includes:
   - 100–150 word introduction
   - translation body
