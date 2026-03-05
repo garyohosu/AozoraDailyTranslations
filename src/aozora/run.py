@@ -144,16 +144,44 @@ def _extract_card_urls_from_person_page(url: str) -> list[str]:
     return uniq
 
 
+def _extract_labeled_value(soup: BeautifulSoup, label: str) -> str:
+    for tr in soup.find_all("tr"):
+        th = tr.find("th")
+        td = tr.find("td")
+        if not th or not td:
+            continue
+        if th.get_text(" ", strip=True) == label:
+            return td.get_text(" ", strip=True)
+    return ""
+
+
 def _build_work_from_card(card_url: str):
     r = requests.get(card_url, timeout=30, headers={"User-Agent": "AozoraDailyTranslations/1.0"})
     r.raise_for_status()
     html = r.content.decode("utf-8", errors="ignore")
     soup = BeautifulSoup(html, "html.parser")
 
-    title_tag = soup.find("h1")
-    author_tag = soup.find("h2")
-    title_ja = (title_tag.get_text(" ", strip=True) if title_tag else "").strip()
-    author_ja = (author_tag.get_text(" ", strip=True) if author_tag else "").strip()
+    # Prefer structured metadata table on card page
+    title_ja = _extract_labeled_value(soup, "作品名：")
+    author_ja = _extract_labeled_value(soup, "著者名：")
+
+    # Fallback to OG title: "作品名 (著者名)"
+    if not title_ja or not author_ja:
+        og = soup.find("meta", attrs={"property": "og:title"})
+        if og and og.get("content"):
+            content = og["content"].strip()
+            m = re.match(r"^(.*?)\s*\((.*?)\)\s*$", content)
+            if m:
+                title_ja = title_ja or m.group(1).strip()
+                author_ja = author_ja or m.group(2).strip()
+
+    # Last fallback: avoid generic h1/h2 labels (図書カード:No.xxx / 作品データ)
+    if not title_ja:
+        title_tag = soup.find("title")
+        tt = title_tag.get_text(" ", strip=True) if title_tag else ""
+        title_ja = re.sub(r"^図書カード：", "", tt).strip()
+    if not author_ja:
+        author_ja = "Unknown"
 
     txt_url = ""
     for a in soup.find_all("a", href=True):
@@ -164,10 +192,11 @@ def _build_work_from_card(card_url: str):
     if not txt_url:
         return None
 
-    if not title_ja:
-        title_ja = "Untitled"
-    if not author_ja:
-        author_ja = "Unknown"
+    # Guard against bad placeholders
+    bad_title = (not title_ja) or title_ja.startswith("図書カード") or title_ja == "作品データ"
+    bad_author = (not author_ja) or author_ja == "作品データ"
+    if bad_title or bad_author:
+        return None
 
     return WorkEntry(
         aozora_card_url=card_url,
@@ -182,7 +211,19 @@ def _build_work_from_card(card_url: str):
 
 def _autofill_works_if_needed(target_count: int = AUTO_FILL_TARGET) -> None:
     works = _load_works()
+
+    # Drop malformed placeholders created by naive parsers
+    cleaned = []
+    for w in works:
+        if w.title_en.startswith("図書カード") or w.title_en == "作品データ":
+            continue
+        if w.author_en == "作品データ":
+            continue
+        cleaned.append(w)
+    works = cleaned
+
     if len(works) >= target_count:
+        _save_works(works)
         return
 
     existing_cards = {w.aozora_card_url for w in works}
