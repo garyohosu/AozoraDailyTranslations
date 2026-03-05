@@ -19,8 +19,8 @@ import json
 import os
 import re
 import subprocess
+import sys
 from pathlib import Path
-from typing import Dict, List
 
 import requests
 from bs4 import BeautifulSoup
@@ -28,10 +28,10 @@ from bs4 import BeautifulSoup
 from aozora.agents.qa_auditor import QAAuditor
 from aozora.generators.work_page import WorkPageGenerator
 from aozora.models import (
+    AttemptLog,
     FetchResult,
     QAGateConfig,
     RunLog,
-    AttemptLog,
     StateJson,
     TranslationResult,
     WorkEntry,
@@ -84,7 +84,7 @@ def _ensure_data_files() -> None:
         )
 
 
-def _load_works() -> List[WorkEntry]:
+def _load_works() -> list[WorkEntry]:
     raw = json.loads((DATA / "works.json").read_text(encoding="utf-8"))
     return [WorkEntry(**w) for w in raw]
 
@@ -96,7 +96,11 @@ def _slugify(text: str) -> str:
 
 
 def _fetch_clean_ja(txt_url: str, timeout: int = 30) -> str:
-    r = requests.get(txt_url, timeout=timeout, headers={"User-Agent": "AozoraDailyTranslations/1.0"})
+    r = requests.get(
+        txt_url,
+        timeout=timeout,
+        headers={"User-Agent": "AozoraDailyTranslations/1.0"},
+    )
     r.raise_for_status()
     html = r.content.decode("cp932", errors="ignore")
     soup = BeautifulSoup(html, "html.parser")
@@ -151,6 +155,7 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
     )
 
     # primary: Codex CLI
+    codex_err = None
     try:
         raw = _ask_codex(prompt, timeout=600)
         data = json.loads(raw[raw.find("{") : raw.rfind("}") + 1])
@@ -159,10 +164,11 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
             introduction_en=str(data.get("introduction_en", "")).strip(),
             source="codex-cli",
         )
-    except Exception:
-        pass
+    except Exception as exc:
+        codex_err = exc
 
     # fallback: local LLM
+    local_err = None
     try:
         raw = _ask_local_llm(prompt)
         data = json.loads(raw[raw.find("{") : raw.rfind("}") + 1])
@@ -171,13 +177,17 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
             introduction_en=str(data.get("introduction_en", "")).strip(),
             source="local-llm",
         )
-    except Exception:
-        pass
+    except Exception as exc:
+        local_err = exc
 
     # last resort
+    err_note = f"codex={codex_err}; local={local_err}"
     return TranslationResult(
         translation_en="Automatic translation is temporarily unavailable. Please check back later.",
-        introduction_en="This page was generated, but translation failed in the current run.",
+        introduction_en=(
+            "This page was generated, but translation failed in the current run. "
+            + err_note[:180]
+        ),
         source="fallback",
     )
 
@@ -189,9 +199,13 @@ def _write_index() -> None:
         slug = p.parent.name
         date = slug[:10]
         title = slug[11:].replace("-", " ").title()
-        items.append(f'<li><a href="./works/{slug}/index.html">{title}</a> <small>({date})</small></li>')
+        items.append(
+            f'<li><a href="./works/{slug}/index.html">{title}</a> '
+            f"<small>({date})</small></li>"
+        )
     html = (
-        "<!doctype html><html><head><meta charset='utf-8'><title>Aozora Daily Translations</title></head>"
+        "<!doctype html><html><head><meta charset='utf-8'>"
+        "<title>Aozora Daily Translations</title></head>"
         "<body><h1>Aozora Daily Translations</h1><ul>"
         + "\n".join(items)
         + "</ul></body></html>"
@@ -199,7 +213,7 @@ def _write_index() -> None:
     (ROOT / "index.html").write_text(html, encoding="utf-8")
 
 
-def run(date: str) -> Dict:
+def run(date: str) -> dict:
     _ensure_data_files()
     works = _load_works()
     state = StateJson.load(str(DATA / "state.json"))
@@ -213,7 +227,12 @@ def run(date: str) -> Dict:
     w = works[idx]
 
     clean = _fetch_clean_ja(w.aozora_txt_url)
-    fetch = FetchResult(raw_text_ja=clean, clean_text_ja=clean, P_ja=max(1, clean.count("\n\n") + 1), C_ja=len(clean))
+    fetch = FetchResult(
+        raw_text_ja=clean,
+        clean_text_ja=clean,
+        P_ja=max(1, clean.count("\n\n") + 1),
+        C_ja=len(clean),
+    )
     tr = _translate(clean, w.title_en, w.author_en)
 
     qa = QAAuditor(QAGateConfig()).audit(tr.translation_en, fetch, genre=w.genre)
@@ -242,7 +261,13 @@ def run(date: str) -> Dict:
         run_date=date,
         run_datetime_jst=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).isoformat(),
         attempts=[
-            AttemptLog(index=idx, card_url=w.aozora_card_url, result="SUCCESS", reason="", output_path=str(out))
+            AttemptLog(
+                index=idx,
+                card_url=w.aozora_card_url,
+                result="SUCCESS",
+                reason="",
+                output_path=str(out),
+            )
         ],
         final_status="SUCCESS",
         api_cost_usd=0.0,
@@ -257,7 +282,7 @@ def main() -> None:
     ap.add_argument("--date", default=_today_jst())
     args = ap.parse_args()
     res = run(args.date)
-    print(json.dumps(res, ensure_ascii=False))
+    sys.stdout.write(json.dumps(res, ensure_ascii=False) + "\n")
 
 
 if __name__ == "__main__":

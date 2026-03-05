@@ -59,6 +59,8 @@ ignore = [
 "tests/**"                      = ["S101", "T20"]
 "tools/**"                      = ["T20", "S", "E501"]
 "src/aozora/generators/*.py"    = ["E501"]  # HTML テンプレートは長行を許容
+"src/aozora/models.py"          = ["UP006", "UP045"]
+"src/aozora/run.py"             = ["S603", "S607"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
