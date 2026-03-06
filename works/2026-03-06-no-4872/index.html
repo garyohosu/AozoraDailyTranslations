@@ -10,7 +10,7 @@
                  script-src 'self' https://pagead2.googlesyndication.com https://cdn.jsdelivr.net 'unsafe-inline';
                  style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
                  font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net;
-                 img-src 'self' https:;
+                 img-src 'self' https: data:;
                  frame-src https://googleads.g.doubleclick.net;">
   <!-- Google AdSense (SPEC.md §13.1) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6743751614716161"
@@ -18,56 +18,50 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css">
 </head>
-<body class="bg-body-tertiary">
-  <header class="py-3 border-bottom bg-white">
-    <div class="container d-flex justify-content-between align-items-center">
-      <a href="../../index.html" class="text-decoration-none fw-bold site-brand">Aozora Daily Translations</a>
-      <a href="../../index.html" class="btn btn-sm btn-outline-secondary">All works</a>
+<body class="az-work-page">
+  <header class="az-work-header">
+    <div class="container-lg d-flex justify-content-between align-items-center">
+      <a href="../../index.html" class="az-work-brand">Aozora Daily Translations</a>
+      <a href="../../index.html" class="az-work-back">← All works</a>
     </div>
   </header>
 
-  <main class="container my-4">
-    <article class="card border-0 shadow-sm">
-      <div class="card-body p-4 p-md-5">
-      <h1 class="mb-1 display-6">Impressions of My Favorite Books</h1>
-      <p class="text-muted mb-3">by Akutagawa, Ryunosuke &mdash; 2026-03-06</p>
+  <main class="az-work-main">
+    <article class="az-work-card">
+      <header class="az-work-title-section">
+        <h1 class="az-work-title">Impressions of My Favorite Books</h1>
+        <div class="az-work-rule" aria-hidden="true"></div>
+        <p class="az-work-byline">by Akutagawa, Ryunosuke &middot; 2026-03-06</p>
+      </header>
 
       <!-- Introduction (SPEC.md §5.2) -->
-      <section class="mb-4" aria-label="Introduction">
-        <p class="lead">In this reflective essay, Ryunosuke Akutagawa traces how his reading tastes changed over time: from Chinese classics he loved in childhood, to ornate European fiction, then to powerful modern writers, and finally to works marked by a quieter, deeper strength.</p>
+      <section class="az-work-intro" aria-label="Introduction">
+        <p>In this reflective essay, Ryunosuke Akutagawa traces how his reading tastes changed over time: from Chinese classics he loved in childhood, to ornate European fiction, then to powerful modern writers, and finally to works marked by a quieter, deeper strength.</p>
       </section>
 
       <!-- Translation body -->
-      <section class="mb-5" aria-label="Translation">
-        <p>As a child, my favorite book above all was Journey to the West. Even now it remains one of my favorites. I do not think the West has a single allegorical tale that can match it. Even Bunyan’s famous Pilgrim’s Progress is no rival to Journey to the West.
-
-Another of my favorites was Water Margin, and I still read it to this day. At one point I had all the names of its 108 heroes memorized. Even then, I found books like Water Margin and Journey to the West far more interesting than Oshikawa Shunrō’s adventure novels and the like.
-
-Before entering middle school, I was devoted to Tokutomi Roka’s Nature and Life, Chogyū’s Thoughts on the Heike, and Kojima Usui’s On Japanese Landscape. At the same time, I read and reread Natsume’s I Am a Cat, Kyōka’s Furyūsen, and Ryokuu’s Arare-zake. So I can hardly laugh at others: I too had a phase like the one described in the Bungei Club’s Young Men of Letters register—my “Tolstoy, Tsubouchi, and Ōmachi Keigetsu” period.
-
-After graduating from middle school I read all kinds of books, though none in particular that I could call a constant favorite. In general, I liked dazzling novels by writers such as Wilde and Gautier. That probably came from my temperament, but it was also surely a reaction against my weariness with Japanese naturalist fiction. Yet around the time I graduated from higher school, for some reason there was a major turn in my tastes and way of seeing things, and I came to dislike those writers I had mentioned—Wilde and Gautier—quite intensely. It was around then that I became devoted to Strindberg. In that state of mind, any art that lacked a Michelangelo-like force felt like rubble to me. I think this was influenced by books I was reading then, such as Jean-Christophe.
-
-That feeling continued even after I graduated from university, but little by little my worship of blazing force faded. Since about a year ago, I have been most drawn to books with a quiet strength. By “quiet,” however, I do not mean merely calm: if there is no force, I have little interest. In this respect, novels by Stendhal and Mérimée, and in Japanese literature Saikaku, are books that are both enjoyable and instructive to me now.
-
-As an aside, I recently took out Jean-Christophe and tried reading it again, but it did not move me as it once had. I wondered whether books from that period had simply gone stale for me; but when I opened Anna Karenina and read a few chapters, it felt as precious as it did in the old days.</p>
+      <section class="az-work-body translation" aria-label="Translation">
+        <p>As a child, my favorite book above all was Journey to the West. Even now it remains one of my favorites. I do not think the West has a single allegorical tale that can match it. Even Bunyan&#x27;s famous Pilgrim&#x27;s Progress is no rival to Journey to the West.</p>
+        <p>Another of my favorites was Water Margin, and I still read it to this day. At one point I had all the names of its 108 heroes memorized. Even then, I found books like Water Margin and Journey to the West far more interesting than Oshikawa Shunrō&#x27;s adventure novels and the like.</p>
+        <p>Before entering middle school, I was devoted to Tokutomi Roka&#x27;s Nature and Life, Chogyū&#x27;s Thoughts on the Heike, and Kojima Usui&#x27;s On Japanese Landscape. At the same time, I read and reread Natsume&#x27;s I Am a Cat, Kyōka&#x27;s Furyūsen, and Ryokuu&#x27;s Arare-zake. So I can hardly laugh at others: I too had a phase like the one described in the Bungei Club&#x27;s Young Men of Letters register—my &quot;Tolstoy, Tsubouchi, and Ōmachi Keigetsu&quot; period.</p>
+        <p>After graduating from middle school I read all kinds of books, though none in particular that I could call a constant favorite. In general, I liked dazzling novels by writers such as Wilde and Gautier. That probably came from my temperament, but it was also surely a reaction against my weariness with Japanese naturalist fiction. Yet around the time I graduated from higher school, for some reason there was a major turn in my tastes and way of seeing things, and I came to dislike those writers I had mentioned—Wilde and Gautier—quite intensely. It was around then that I became devoted to Strindberg. In that state of mind, any art that lacked a Michelangelo-like force felt like rubble to me. I think this was influenced by books I was reading then, such as Jean-Christophe.</p>
+        <p>That feeling continued even after I graduated from university, but little by little my worship of blazing force faded. Since about a year ago, I have been most drawn to books with a quiet strength. By &quot;quiet,&quot; however, I do not mean merely calm: if there is no force, I have little interest. In this respect, novels by Stendhal and Mérimée, and in Japanese literature Saikaku, are books that are both enjoyable and instructive to me now.</p>
+        <p>As an aside, I recently took out Jean-Christophe and tried reading it again, but it did not move me as it once had. I wondered whether books from that period had simply gone stale for me; but when I opened Anna Karenina and read a few chapters, it felt as precious as it did in the old days.</p>
       </section>
 
       <!-- Mandatory credits (SPEC.md §4.4) -->
-      <footer class="border-top pt-3 mt-4 text-muted small">
+      <footer class="az-work-credits">
         <p>Source (Japanese text): <strong>Aozora Bunko (Public Domain in Japan)</strong></p>
         <p>Work: <em>Impressions of My Favorite Books</em> / Author: <em>Akutagawa, Ryunosuke</em></p>
         <p>Aozora Bunko card: <a href="https://www.aozora.gr.jp/cards/000879/card4872.html" target="_blank" rel="noopener">https://www.aozora.gr.jp/cards/000879/card4872.html</a></p>
         <p>Input &amp; Proofreading: See Aozora Bunko card for volunteer contributors</p>
         <p>English translation license: <strong>CC0 1.0 Universal</strong></p>
-        <p class="fst-italic">
-          This translation is automatically generated and may contain errors.
-          Please refer to the original Japanese text for authoritative meaning.
-        </p>
+        <p><em>This translation is automatically generated and may contain errors.
+          Please refer to the original Japanese text for authoritative meaning.</em></p>
       </footer>
-      </div>
     </article>
   </main>
 </body>

@@ -10,7 +10,7 @@
                  script-src 'self' https://pagead2.googlesyndication.com https://cdn.jsdelivr.net 'unsafe-inline';
                  style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
                  font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net;
-                 img-src 'self' https:;
+                 img-src 'self' https: data:;
                  frame-src https://googleads.g.doubleclick.net;">
   <!-- Google AdSense (SPEC.md §13.1) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6743751614716161"
@@ -18,78 +18,59 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/style.css">
 </head>
-<body class="bg-body-tertiary">
-  <header class="py-3 border-bottom bg-white">
-    <div class="container d-flex justify-content-between align-items-center">
-      <a href="../../index.html" class="text-decoration-none fw-bold site-brand">Aozora Daily Translations</a>
-      <a href="../../index.html" class="btn btn-sm btn-outline-secondary">All works</a>
+<body class="az-work-page">
+  <header class="az-work-header">
+    <div class="container-lg d-flex justify-content-between align-items-center">
+      <a href="../../index.html" class="az-work-brand">Aozora Daily Translations</a>
+      <a href="../../index.html" class="az-work-back">← All works</a>
     </div>
   </header>
 
-  <main class="container my-4">
-    <article>
-      <h1 class="mb-1">Rashomon</h1>
-      <p class="text-muted mb-3">by Akutagawa Ryunosuke &mdash; 2026-03-05</p>
+  <main class="az-work-main">
+    <article class="az-work-card">
+      <header class="az-work-title-section">
+        <h1 class="az-work-title">Rashomon</h1>
+        <div class="az-work-rule" aria-hidden="true"></div>
+        <p class="az-work-byline">by Akutagawa Ryunosuke &middot; 2026-03-05</p>
+      </header>
 
       <!-- Introduction (SPEC.md §5.2) -->
-      <section class="mb-4" aria-label="Introduction">
-        <p class="lead">An English translation of the provided excerpt from Ryunosuke Akutagawa’s &quot;Rashomon,&quot; rendered in natural modern prose while preserving the tone and imagery of the original. (QA warning)</p>
+      <section class="az-work-intro" aria-label="Introduction">
+        <p>An English translation of the provided excerpt from Ryunosuke Akutagawa&#x27;s &quot;Rashomon,&quot; rendered in natural modern prose while preserving the tone and imagery of the original.</p>
       </section>
 
       <!-- Translation body -->
-      <section class="mb-5" aria-label="Translation">
-        <p>Ryunosuke Akutagawa
-Rashomon
-
-Rashomon
-
-It was one evening at dusk. A single servant was waiting under the Rashomon gate for the rain to stop.
-
-Under the vast gate, there was no one besides him. Only a lone cricket clung to one of the huge round pillars, where the vermilion paint had peeled away in places. Since Rashomon stood on Suzaku Avenue, there ought to have been two or three other people sheltering from the rain too, in women’s straw hats or soft eboshi caps. But there was no one except this man.
-
-The reason was that, over the last two or three years, Kyoto had been struck again and again by disasters: earthquakes, whirlwinds, fires, famine. The decline of the capital had been extraordinary. According to old records, people smashed Buddhist statues and ritual objects, then piled the wood by the roadside and sold it as firewood, still marked with red pigment and bits of gold and silver foil. If things were that bad in the city itself, no one cared in the least about repairing Rashomon. Taking advantage of its ruin, foxes and badgers moved in. Thieves moved in. In the end, it even became customary to bring unclaimed corpses and dump them at this gate. So once daylight faded, everyone found the place eerie and kept away.
-
-Instead, crows gathered from who knows where. In the daytime, countless crows circled the high roof ornaments, cawing as they flew. Especially when the sky above the gate turned red at sunset, they stood out clearly, like sesame seeds scattered across it. Of course, the crows came to peck at the flesh of the dead left above the gate. But today, perhaps because it was late, not a single one was in sight. All that could be seen were white specks of crow droppings stuck here and there on the stone steps, which were crumbling in places, with long grass growing from the cracks. The servant sat on the top of the seven steps, resting the seat of his well-worn dark-blue jacket there, absentmindedly watching the rain and worrying at the large pimple on his right cheek.
-
-I wrote a moment ago that the servant was waiting for the rain to stop. But even if it stopped, he had no particular plan. Normally he should have gone back to his master’s house. But four or five days earlier, that master had dismissed him. As I said, Kyoto at the time was in serious decline. This servant, too, being turned out after many years of service, was just one small ripple of that decline. So rather than saying he was waiting for the rain to stop, it is more accurate to say that, trapped by the rain, he had nowhere to go and was at a complete loss. On top of that, today’s gloomy sky had no small effect on this Heian-era servant’s mood. The rain that began in late afternoon showed no sign of ending. So the servant, putting everything else aside, tried somehow to secure tomorrow’s livelihood—in other words, to somehow solve what could not be solved. As he wandered through these aimless thoughts, he half listened to the sound of rain falling on Suzaku Avenue.
-
-The rain wrapped Rashomon, gathering a rushing roar from far away. The evening darkness gradually lowered the sky, and when he looked up, the gate’s roof seemed to jut out and hold up heavy, dim clouds on the tips of its tiles.
-
-When you have to make the impossible somehow possible, you cannot afford to choose your means. If you insist on choosing, you will simply starve to death under an earthen wall or on the roadside. And then you too will be brought here and thrown above this gate like a dog. If he did not choose, then—after pacing the same line of thought again and again, he finally arrived at this point. But this “if” remained only an “if,” no matter how long he sat with it. Though he accepted that he could not afford to choose his means, he still lacked the courage to affirm positively the conclusion that naturally followed: “I have no choice but to become a thief.”
-
-He sneezed loudly and then rose with obvious effort. In Kyoto’s evening chill, it was already cold enough to want a brazier. Wind, together with the dusk, blew unrestrained between the gate’s pillars. The cricket that had perched on the vermilion pillar was already gone.
-
-Drawing in his neck, he hitched up the shoulders of his dark-blue jacket over his yellow undershirt and looked around the gate. He wanted to find somewhere to spend the night in some comfort—a place safe from rain and wind, and from people’s eyes. Then he noticed a broad ladder, also painted vermilion, leading up to the gate tower. If anyone was up there, it would only be corpses. Taking care that the long sword at his waist would not slip from its sheath, he set his straw-sandaled foot on the lowest rung.
-
-Several minutes later, halfway up that broad ladder, the man crouched like a cat, holding his breath and peering upward. A faint light from the upper floor touched his right cheek—the cheek with the red, pus-filled pimple among short whiskers. From the start he had assumed that only corpses were above. But after climbing two or three rungs, he saw that someone up there had lit a fire and was moving it around. He knew at once from the cloudy yellow light wavering over the cobwebbed corners of the ceiling. On a rainy night like this, anyone lighting a fire atop Rashomon could not be ordinary.
-
-Stealthy as a gecko, he crept up the steep ladder without a sound, crawling to the top rung at last. Flattening his body as much as he could and stretching his neck forward as far as he could, he peered fearfully into the tower.
-
-Inside, just as rumor said, several corpses lay dumped about carelessly. But the firelight reached less than he had expected, so he could not tell how many there were. He could only make out dimly that some were naked and some still clothed. Naturally there seemed to be both men and women. And all of them, sprawled across the floor with mouths open and hands outstretched, looked so much like clay dolls that one could doubt they had ever been living people. The dim light fell on raised parts—shoulders, chests—and made the lower parts darker still, while they kept silent forever, like the mute.
-
-Overcome by the stench of decay, he involuntarily covered his nose. But the next instant he forgot he was doing even that. A powerful emotion had almost completely robbed him of his sense of smell.
-
-Only then did he first notice the living person crouched among the corpses: an old woman, monkey-like, short and thin, with white hair, wearing a cypress-bark-colored robe. In her right hand she held a lit pine splinter and was peering closely into one corpse’s face. Judging from the long hair, it was probably a woman’s corpse.
-
-Moved by sixty percent fear and forty percent curiosity, the servant forgot even to breathe for a moment. Borrowing the old chronicler’s phrase, he felt as if “every hair on his head and body had thickened.” Then the old woman stuck the pine splinter between floorboards, put both hands on the corpse’s head she had been examining, and began plucking out its long hair one strand at a time, just like a mother monkey picking lice from her baby. The hair seemed to come out as her hand moved.
-
-And as each strand was pulled free, the servant felt his fear gradually drain away...</p>
+      <section class="az-work-body translation" aria-label="Translation">
+        <p>It was one evening at dusk. A single servant was waiting under the Rashomon gate for the rain to stop.</p>
+        <p>Under the vast gate, there was no one besides him. Only a lone cricket clung to one of the huge round pillars, where the vermilion paint had peeled away in places. Since Rashomon stood on Suzaku Avenue, there ought to have been two or three other people sheltering from the rain too, in women&#x27;s straw hats or soft eboshi caps. But there was no one except this man.</p>
+        <p>The reason was that, over the last two or three years, Kyoto had been struck again and again by disasters: earthquakes, whirlwinds, fires, famine. The decline of the capital had been extraordinary. According to old records, people smashed Buddhist statues and ritual objects, then piled the wood by the roadside and sold it as firewood, still marked with red pigment and bits of gold and silver foil. If things were that bad in the city itself, no one cared in the least about repairing Rashomon. Taking advantage of its ruin, foxes and badgers moved in. Thieves moved in. In the end, it even became customary to bring unclaimed corpses and dump them at this gate. So once daylight faded, everyone found the place eerie and kept away.</p>
+        <p>Instead, crows gathered from who knows where. In the daytime, countless crows circled the high roof ornaments, cawing as they flew. Especially when the sky above the gate turned red at sunset, they stood out clearly, like sesame seeds scattered across it. Of course, the crows came to peck at the flesh of the dead left above the gate. But today, perhaps because it was late, not a single one was in sight. All that could be seen were white specks of crow droppings stuck here and there on the stone steps, which were crumbling in places, with long grass growing from the cracks. The servant sat on the top of the seven steps, resting the seat of his well-worn dark-blue jacket there, absentmindedly watching the rain and worrying at the large pimple on his right cheek.</p>
+        <p>I wrote a moment ago that the servant was waiting for the rain to stop. But even if it stopped, he had no particular plan. Normally he should have gone back to his master&#x27;s house. But four or five days earlier, that master had dismissed him. As I said, Kyoto at the time was in serious decline. This servant, too, being turned out after many years of service, was just one small ripple of that decline. So rather than saying he was waiting for the rain to stop, it is more accurate to say that, trapped by the rain, he had nowhere to go and was at a complete loss. On top of that, today&#x27;s gloomy sky had no small effect on this Heian-era servant&#x27;s mood. The rain that began in late afternoon showed no sign of ending. So the servant, putting everything else aside, tried somehow to secure tomorrow&#x27;s livelihood—in other words, to somehow solve what could not be solved. As he wandered through these aimless thoughts, he half listened to the sound of rain falling on Suzaku Avenue.</p>
+        <p>The rain wrapped Rashomon, gathering a rushing roar from far away. The evening darkness gradually lowered the sky, and when he looked up, the gate&#x27;s roof seemed to jut out and hold up heavy, dim clouds on the tips of its tiles.</p>
+        <p>When you have to make the impossible somehow possible, you cannot afford to choose your means. If you insist on choosing, you will simply starve to death under an earthen wall or on the roadside. And then you too will be brought here and thrown above this gate like a dog. If he did not choose, then—after pacing the same line of thought again and again, he finally arrived at this point. But this &quot;if&quot; remained only an &quot;if,&quot; no matter how long he sat with it. Though he accepted that he could not afford to choose his means, he still lacked the courage to affirm positively the conclusion that naturally followed: &quot;I have no choice but to become a thief.&quot;</p>
+        <p>He sneezed loudly and then rose with obvious effort. In Kyoto&#x27;s evening chill, it was already cold enough to want a brazier. Wind, together with the dusk, blew unrestrained between the gate&#x27;s pillars. The cricket that had perched on the vermilion pillar was already gone.</p>
+        <p>Drawing in his neck, he hitched up the shoulders of his dark-blue jacket over his yellow undershirt and looked around the gate. He wanted to find somewhere to spend the night in some comfort—a place safe from rain and wind, and from people&#x27;s eyes. Then he noticed a broad ladder, also painted vermilion, leading up to the gate tower. If anyone was up there, it would only be corpses. Taking care that the long sword at his waist would not slip from its sheath, he set his straw-sandaled foot on the lowest rung.</p>
+        <p>Several minutes later, halfway up that broad ladder, the man crouched like a cat, holding his breath and peering upward. A faint light from the upper floor touched his right cheek—the cheek with the red, pus-filled pimple among short whiskers. From the start he had assumed that only corpses were above. But after climbing two or three rungs, he saw that someone up there had lit a fire and was moving it around. He knew at once from the cloudy yellow light wavering over the cobwebbed corners of the ceiling. On a rainy night like this, anyone lighting a fire atop Rashomon could not be ordinary.</p>
+        <p>Stealthy as a gecko, he crept up the steep ladder without a sound, crawling to the top rung at last. Flattening his body as much as he could and stretching his neck forward as far as he could, he peered fearfully into the tower.</p>
+        <p>Inside, just as rumor said, several corpses lay dumped about carelessly. But the firelight reached less than he had expected, so he could not tell how many there were. He could only make out dimly that some were naked and some still clothed. Naturally there seemed to be both men and women. And all of them, sprawled across the floor with mouths open and hands outstretched, looked so much like clay dolls that one could doubt they had ever been living people. The dim light fell on raised parts—shoulders, chests—and made the lower parts darker still, while they kept silent forever, like the mute.</p>
+        <p>Overcome by the stench of decay, he involuntarily covered his nose. But the next instant he forgot he was doing even that. A powerful emotion had almost completely robbed him of his sense of smell.</p>
+        <p>Only then did he first notice the living person crouched among the corpses: an old woman, monkey-like, short and thin, with white hair, wearing a cypress-bark-colored robe. In her right hand she held a lit pine splinter and was peering closely into one corpse&#x27;s face. Judging from the long hair, it was probably a woman&#x27;s corpse.</p>
+        <p>Moved by sixty percent fear and forty percent curiosity, the servant forgot even to breathe for a moment. Borrowing the old chronicler&#x27;s phrase, he felt as if &quot;every hair on his head and body had thickened.&quot; Then the old woman stuck the pine splinter between floorboards, put both hands on the corpse&#x27;s head she had been examining, and began plucking out its long hair one strand at a time, just like a mother monkey picking lice from her baby. The hair seemed to come out as her hand moved.</p>
+        <p>And as each strand was pulled free, the servant felt his fear gradually drain away...</p>
       </section>
 
       <!-- Mandatory credits (SPEC.md §4.4) -->
-      <footer class="border-top pt-3 mt-4 text-muted small">
+      <footer class="az-work-credits">
         <p>Source (Japanese text): <strong>Aozora Bunko (Public Domain in Japan)</strong></p>
         <p>Work: <em>Rashomon</em> / Author: <em>Akutagawa Ryunosuke</em></p>
         <p>Aozora Bunko card: <a href="https://www.aozora.gr.jp/cards/000879/card128.html" target="_blank" rel="noopener">https://www.aozora.gr.jp/cards/000879/card128.html</a></p>
         <p>Input &amp; Proofreading: See Aozora Bunko card for volunteer contributors</p>
         <p>English translation license: <strong>CC0 1.0 Universal</strong></p>
-        <p class="fst-italic">
-          This translation is automatically generated and may contain errors.
-          Please refer to the original Japanese text for authoritative meaning.
-        </p>
+        <p><em>This translation is automatically generated and may contain errors.
+          Please refer to the original Japanese text for authoritative meaning.</em></p>
       </footer>
     </article>
   </main>

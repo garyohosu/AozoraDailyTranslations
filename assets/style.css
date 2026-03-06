@@ -4,17 +4,16 @@
 body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
 .site-brand { font-family: 'Libre Baskerville', serif; letter-spacing: .2px; }
 
-/* Work-page cards (Bootstrap layout) */
+/* Work-page cards (Bootstrap layout) — legacy */
 .work-card { border: 1px solid #eceff3; border-radius: 14px; }
 .work-card:hover { box-shadow: 0 8px 24px rgba(21, 26, 35, 0.08); }
 .translation p { line-height: 1.85; }
 
 
 /* ══════════════════════════════════════════════════
-   INDEX PAGE — "Sumi & Vermillion" design
+   INDEX PAGE — "Sumi & Vermillion"
    ══════════════════════════════════════════════════ */
 
-/* Large "青空" watermark in header background */
 .az-watermark {
   position: absolute;
   top: 50%;
@@ -30,7 +29,6 @@ body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
   white-space: nowrap;
 }
 
-/* "青空文庫 × English" small label */
 .az-jp-label {
   font-family: 'Noto Serif JP', serif;
   font-size: 0.8rem;
@@ -39,7 +37,6 @@ body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
   margin-bottom: 0.75rem;
 }
 
-/* Site title */
 .az-site-title {
   font-family: 'Libre Baskerville', serif;
   font-size: clamp(1.8rem, 4.5vw, 2.8rem);
@@ -48,7 +45,6 @@ body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
   margin-bottom: 1rem;
 }
 
-/* Tagline */
 .az-site-desc {
   font-family: 'Crimson Pro', Georgia, serif;
   font-size: 1.1rem;
@@ -57,7 +53,6 @@ body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
   max-width: 22rem;
 }
 
-/* "DAILY" badge */
 .az-daily-badge {
   display: inline-block;
   background: #C0392B;
@@ -72,7 +67,6 @@ body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
   margin-top: 4px;
 }
 
-/* Section eyebrow */
 .az-section-label {
   font-family: 'Libre Baskerville', serif;
   font-size: 0.68rem;
@@ -82,7 +76,6 @@ body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
   margin-bottom: 1.5rem;
 }
 
-/* ── Work Cards ──────────────────────────────────── */
 .az-card {
   display: flex;
   flex-direction: column;
@@ -133,17 +126,146 @@ body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
   letter-spacing: 0.04em;
 }
 
-/* Footer */
 .az-footer-text {
   font-family: 'Crimson Pro', serif;
   font-size: 0.9rem;
   color: #9999AA;
   line-height: 1.6;
 }
-.az-link {
-  color: #C0392B;
-  text-decoration: none;
+.az-link { color: #C0392B; text-decoration: none; }
+.az-link:hover { text-decoration: underline; }
+
+
+/* ══════════════════════════════════════════════════
+   WORK PAGE — "Washi Paper"
+   ══════════════════════════════════════════════════ */
+
+/* Body: warm textured surface (darker washi margin) */
+.az-work-page {
+  background-color: #C9BBAA;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  min-height: 100vh;
 }
-.az-link:hover {
-  text-decoration: underline;
+
+/* Header: consistent with index */
+.az-work-header {
+  background: #1A1A2E;
+  border-bottom: 2px solid #C0392B;
+  padding: 14px 0;
+}
+.az-work-brand {
+  font-family: 'Libre Baskerville', serif;
+  color: white !important;
+  text-decoration: none !important;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+.az-work-back {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.55) !important;
+  text-decoration: none !important;
+  transition: color 0.2s;
+}
+.az-work-back:hover { color: #C0392B !important; }
+
+/* Main padding: the washi "margins" around the card */
+.az-work-main {
+  padding: 3rem 1.25rem 5rem;
+}
+
+/* Article card: the washi paper sheet itself */
+.az-work-card {
+  background-color: #F5EFE3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 3.5rem 4rem;
+  border-radius: 2px;
+  box-shadow:
+    0 2px 4px rgba(80, 55, 20, 0.08),
+    0 8px 30px rgba(80, 55, 20, 0.14),
+    0 30px 70px rgba(80, 55, 20, 0.10);
+}
+
+/* Title block */
+.az-work-title-section { margin-bottom: 2.5rem; }
+
+.az-work-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+  color: #1A1A2E;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.az-work-rule {
+  width: 2.5rem;
+  height: 2px;
+  background: #C0392B;
+  margin-bottom: 0.9rem;
+  border: none;
+}
+
+.az-work-byline {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.07em;
+  color: #9E8870;
+  margin: 0;
+}
+
+/* Introduction: italic with vermillion left accent */
+.az-work-intro {
+  margin-bottom: 2.5rem;
+}
+.az-work-intro p {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #5A4A38;
+  line-height: 1.8;
+  border-left: 2px solid #C0392B;
+  padding-left: 1.25rem;
+  margin: 0;
+}
+
+/* Translation body: the heart of the reading experience */
+.az-work-body p {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.13rem;
+  line-height: 1.92;
+  color: #251E14;
+  margin-bottom: 0;
+  margin-top: 1.4em;
+  text-indent: 1.5em;
+}
+.az-work-body p:first-child {
+  margin-top: 0;
+  text-indent: 0;
+}
+
+/* Credits */
+.az-work-credits {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #D4C5B0;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.85rem;
+  color: #9E8870;
+  line-height: 1.7;
+}
+.az-work-credits p { margin-bottom: 0.3rem; }
+.az-work-credits a { color: #C0392B; text-decoration: none; }
+.az-work-credits a:hover { text-decoration: underline; }
+.az-work-credits strong { color: #7A6A58; }
+.az-work-credits em { color: #7A6A58; }
+
+/* Responsive: narrow screens */
+@media (max-width: 640px) {
+  .az-work-card { padding: 2rem 1.5rem; }
+  .az-work-main { padding: 1.5rem 0.75rem 4rem; }
 }
