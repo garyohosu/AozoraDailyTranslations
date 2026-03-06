@@ -473,13 +473,27 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
     )
 
 
+def _read_work_title(work_index_path: Path, slug: str) -> str:
+    try:
+        html = work_index_path.read_text(encoding="utf-8", errors="ignore")
+        soup = BeautifulSoup(html, "html.parser")
+        h1 = soup.find("h1")
+        if h1:
+            title = h1.get_text(" ", strip=True)
+            if title:
+                return title
+    except Exception as exc:
+        _ = exc
+    return slug[11:].replace("-", " ").title()
+
+
 def _write_index() -> None:
     works = sorted(WORKS_DIR.glob("*/index.html"), reverse=True)
     cards = []
     for p in works[:50]:
         slug = p.parent.name
         date = slug[:10]
-        title = slug[11:].replace("-", " ").title()
+        title = _read_work_title(p, slug)
         cards.append(
             f'<article class="col-12 col-md-6">'
             f'<a class="text-decoration-none text-dark" href="./works/{slug}/index.html">'
