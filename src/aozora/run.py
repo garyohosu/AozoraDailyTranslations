@@ -123,6 +123,15 @@ def _guess_genre(title_ja: str) -> str:
     return "poem" if any(h in t for h in poem_hints) else "short"
 
 
+def _has_non_ascii(text: str) -> bool:
+    return any(ord(ch) > 127 for ch in (text or ""))
+
+
+def _card_id_from_url(card_url: str) -> str:
+    m = re.search(r"card(\d+)\.html$", card_url)
+    return m.group(1) if m else "unknown"
+
+
 def _extract_card_urls_from_person_page(url: str) -> list[str]:
     r = requests.get(url, timeout=30, headers={"User-Agent": "AozoraDailyTranslations/1.0"})
     r.raise_for_status()
@@ -153,6 +162,11 @@ def _extract_labeled_value(soup: BeautifulSoup, label: str) -> str:
         if th.get_text(" ", strip=True) == label:
             return td.get_text(" ", strip=True)
     return ""
+
+
+def _extract_author_romaji(soup: BeautifulSoup) -> str:
+    value = _extract_labeled_value(soup, "ローマ字表記：")
+    return value.strip()
 
 
 def _build_work_from_card(card_url: str):
@@ -198,11 +212,20 @@ def _build_work_from_card(card_url: str):
     if bad_title or bad_author:
         return None
 
+    card_id = _card_id_from_url(card_url)
+    title_en = title_ja if not _has_non_ascii(title_ja) else f"Aozora Work No.{card_id}"
+
+    author_romaji = _extract_author_romaji(soup)
+    if author_romaji:
+        author_en = author_romaji
+    else:
+        author_en = author_ja if not _has_non_ascii(author_ja) else f"Author No.{card_id}"
+
     return WorkEntry(
         aozora_card_url=card_url,
         aozora_txt_url=txt_url,
-        title_en=title_ja,
-        author_en=author_ja,
+        title_en=title_en,
+        author_en=author_en,
         title_ja=title_ja,
         author_ja=author_ja,
         genre=_guess_genre(title_ja),
@@ -212,13 +235,22 @@ def _build_work_from_card(card_url: str):
 def _autofill_works_if_needed(target_count: int = AUTO_FILL_TARGET) -> None:
     works = _load_works()
 
-    # Drop malformed placeholders created by naive parsers
+    # Drop malformed placeholders created by naive parsers / normalize old rows
     cleaned = []
     for w in works:
         if w.title_en.startswith("図書カード") or w.title_en == "作品データ":
             continue
         if w.author_en == "作品データ":
             continue
+
+        # Backfill legacy rows where *_en is still Japanese text
+        if _has_non_ascii(w.title_en) or _has_non_ascii(w.author_en):
+            card_id = _card_id_from_url(w.aozora_card_url)
+            # keep Japanese in *_ja, normalize *_en to ASCII-safe values
+            if _has_non_ascii(w.title_en):
+                w.title_en = f"Aozora Work No.{card_id}"
+            if _has_non_ascii(w.author_en):
+                w.author_en = f"Author No.{card_id}"
         cleaned.append(w)
     works = cleaned
 
