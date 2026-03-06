@@ -504,15 +504,7 @@ def _write_index() -> None:
             f'</a></div>'
         )
 
-    featured = "\n".join(cards[:3]) if cards else '<p class="text-muted">No works yet.</p>'
     all_cards = "\n".join(cards) if cards else '<p class="text-muted">No works yet.</p>'
-
-    latest_link = "#"
-    if works:
-        latest_link = (
-            f"./works/{works[0].parent.name}/index.html"
-            "?utm_source=quora&utm_medium=social&utm_campaign=aozora_launch"
-        )
 
     html = f"""<!doctype html>
 <html lang="en">
@@ -520,10 +512,6 @@ def _write_index() -> None:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Aozora Daily Translations</title>
-  <meta
-    name="description"
-    content="Daily English translations of public-domain Japanese literature from Aozora Bunko."
-  >
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -543,24 +531,19 @@ def _write_index() -> None:
       <div class="flex items-start justify-between gap-4">
         <div>
           <p class="az-jp-label">青空文庫 × English</p>
-          <h1 class="az-site-title">Aozora Daily<br>Translations</h1>
+          <h1 class="az-site-title">
+            Aozora Daily<br>Translations
+          </h1>
           <p class="az-site-desc">
-            Read one Japanese classic in modern English every day.<br>
+            One Japanese classic, translated fresh every day.<br>
             Public domain. Free forever.
           </p>
-          <div class="mt-5 flex flex-wrap gap-2">
-            <a href="{latest_link}" class="az-work-back">Read latest translation</a>
-            <a href="#featured" class="az-work-back">Start with 3 picks</a>
-          </div>
         </div>
         <span class="az-daily-badge">Daily</span>
       </div>
     </div>
 
-    <div
-      style="position:absolute; bottom:0; left:0; width:100%; line-height:0;"
-      aria-hidden="true"
-    >
+    <div style="position:absolute; bottom:0; left:0; width:100%; line-height:0;" aria-hidden="true">
       <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
            style="display:block; width:100%; height:60px;">
         <path
@@ -572,15 +555,8 @@ def _write_index() -> None:
   </header>
 
   <main class="max-w-5xl mx-auto px-6 py-12">
-    <section id="featured" class="mb-10">
-      <p class="az-section-label">Recommended first reads</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">{featured}</div>
-    </section>
-
-    <section>
-      <p class="az-section-label">All translations</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">{all_cards}</div>
-    </section>
+    <p class="az-section-label">Latest Translations</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">{all_cards}</div>
   </main>
 
   <footer class="max-w-5xl mx-auto px-6 pb-12">
@@ -590,7 +566,7 @@ def _write_index() -> None:
         <a href="https://www.aozora.gr.jp/" target="_blank" rel="noopener" class="az-link">
           Aozora Bunko
         </a>
-        public-domain works. English translations: <strong>CC0 1.0 Universal</strong>.
+        public domain works. English translations: <strong>CC0 1.0 Universal</strong>.
       </p>
     </div>
   </footer>
