@@ -134,21 +134,25 @@ class TestScreenMethod:
         assert result.status == "INELIGIBLE"
 
     def test_ineligible_when_us_distribution_risk(self, screener, short_work):
-        with patch.object(screener, "_fetch_card_html", return_value=PUBLIC_DOMAIN_HTML), \
-             patch.object(screener, "_check_public_domain", return_value=True), \
-             patch.object(screener, "_detect_translation_work", return_value=False), \
-             patch.object(screener, "_check_annotation_heavy", return_value=False), \
-             patch.object(screener, "_check_us_distribution_risk", return_value=True):
+        with patch.object(
+            screener, "_fetch_card_html", return_value=PUBLIC_DOMAIN_HTML
+        ), patch.object(screener, "_check_public_domain", return_value=True), patch.object(
+            screener, "_detect_translation_work", return_value=False
+        ), patch.object(screener, "_check_annotation_heavy", return_value=False), patch.object(
+            screener, "_check_us_distribution_risk", return_value=True
+        ):
             result = screener.screen(short_work)
         assert result.status == "INELIGIBLE"
         assert result.reason
 
     def test_eligible_when_us_distribution_risk_false(self, screener, short_work):
-        with patch.object(screener, "_fetch_card_html", return_value=PUBLIC_DOMAIN_HTML), \
-             patch.object(screener, "_check_public_domain", return_value=True), \
-             patch.object(screener, "_detect_translation_work", return_value=False), \
-             patch.object(screener, "_check_annotation_heavy", return_value=False), \
-             patch.object(screener, "_check_us_distribution_risk", return_value=False):
+        with patch.object(
+            screener, "_fetch_card_html", return_value=PUBLIC_DOMAIN_HTML
+        ), patch.object(screener, "_check_public_domain", return_value=True), patch.object(
+            screener, "_detect_translation_work", return_value=False
+        ), patch.object(screener, "_check_annotation_heavy", return_value=False), patch.object(
+            screener, "_check_us_distribution_risk", return_value=False
+        ):
             result = screener.screen(short_work)
         assert result.status == "ELIGIBLE"
 

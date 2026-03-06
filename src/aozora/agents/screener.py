@@ -96,4 +96,3 @@ class Screener:
             r"copyright.*(remain|reserved)",
         ]
         return any(re.search(p, text) for p in risk_patterns)
-

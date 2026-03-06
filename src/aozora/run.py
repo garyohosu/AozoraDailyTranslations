@@ -46,6 +46,7 @@ AOZORA_DEFAULT_SOURCE = "https://www.aozora.gr.jp/index_pages/person879.html"  #
 AUTO_FILL_TARGET = int(os.environ.get("AOZORA_WORKS_TARGET", "200"))
 EN_MAP_FILE = DATA / "en_map.json"
 
+
 def _today_jst() -> str:
     return dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat()
 
@@ -466,8 +467,7 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
     return TranslationResult(
         translation_en="Automatic translation is temporarily unavailable. Please check back later.",
         introduction_en=(
-            "This page was generated, but translation failed in the current run. "
-            + err_note[:180]
+            "This page was generated, but translation failed in the current run. " + err_note[:180]
         ),
         source="fallback",
     )
@@ -486,7 +486,7 @@ def _write_index() -> None:
             f'<div class="work-card bg-white p-4 h-100">'
             f'<p class="text-secondary small mb-2">{date}</p>'
             f'<h3 class="h5 mb-2">{title}</h3>'
-            f"<p class=\"text-muted mb-0\">Read today's translation</p>"
+            f'<p class="text-muted mb-0">Read today\'s translation</p>'
             f"</div></a></article>"
         )
 
