@@ -490,18 +490,18 @@ def _read_work_title(work_index_path: Path, slug: str) -> str:
 def _write_index() -> None:
     works = sorted(WORKS_DIR.glob("*/index.html"), reverse=True)
     cards = []
-    for p in works[:50]:
+    for idx, p in enumerate(works[:50]):
         slug = p.parent.name
         date = slug[:10]
         title = _read_work_title(p, slug)
+        delay = min(idx * 100, 600)
         cards.append(
-            f'<article class="col-12 col-md-6">'
-            f'<a class="text-decoration-none text-dark" href="./works/{slug}/index.html">'
-            f'<div class="work-card bg-white p-4 h-100">'
-            f'<p class="text-secondary small mb-2">{date}</p>'
-            f'<h3 class="h5 mb-2">{title}</h3>'
-            f'<p class="text-muted mb-0">Read translation</p>'
-            f"</div></a></article>"
+            f'<div data-aos="fade-up" data-aos-delay="{delay}">'
+            f'<a class="az-card" href="./works/{slug}/index.html">'
+            f'<span class="az-card-date">{date}</span>'
+            f'<span class="az-card-title">{title}</span>'
+            f'<span class="az-card-cta">Read translation →</span>'
+            f'</a></div>'
         )
 
     featured = "\n".join(cards[:3]) if cards else '<p class="text-muted">No works yet.</p>'
@@ -515,55 +515,88 @@ def _write_index() -> None:
         )
 
     html = f"""<!doctype html>
-<html lang=\"en\">
+<html lang="en">
 <head>
-  <meta charset=\"utf-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Aozora Daily Translations</title>
   <meta
-    name=\"description\"
-    content=\"Daily English translations of public-domain Japanese literature from Aozora Bunko.\"
+    name="description"
+    content="Daily English translations of public-domain Japanese literature from Aozora Bunko."
   >
-  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\">
-  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">
-  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href=\"https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Inter:wght@400;500;700&display=swap\"
-    rel=\"stylesheet\"
+    href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Noto+Serif+JP:wght@300;400&display=swap"
+    rel="stylesheet"
   >
-  <link rel=\"stylesheet\" href=\"./assets/style.css\">
+  <link rel="stylesheet" href="./assets/style.css">
 </head>
-<body class=\"bg-body-tertiary\">
-  <header class=\"border-bottom bg-white\">
-    <div class=\"container py-4 py-md-5\">
-      <div class=\"d-flex justify-content-between align-items-center\">
-        <h1 class=\"h3 mb-0 site-brand\">Aozora Daily Translations</h1>
-        <span class=\"badge text-bg-dark\">Daily</span>
+<body style="background:#FAF7F0; color:#2C2C3E; min-height:100vh;">
+
+  <header style="background:#1A1A2E; position:relative; overflow:hidden;">
+    <div class="az-watermark" aria-hidden="true">青空</div>
+
+    <div class="max-w-5xl mx-auto px-6 pt-14 pb-20 relative" style="z-index:10;">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="az-jp-label">青空文庫 × English</p>
+          <h1 class="az-site-title">Aozora Daily<br>Translations</h1>
+          <p class="az-site-desc">
+            Read one Japanese classic in modern English every day.<br>
+            Public domain. Free forever.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <a href="{latest_link}" class="az-work-back">Read latest translation</a>
+            <a href="#featured" class="az-work-back">Start with 3 picks</a>
+          </div>
+        </div>
+        <span class="az-daily-badge">Daily</span>
       </div>
-      <p class=\"text-secondary mt-3 mb-2\">
-        Read one Japanese classic in modern English every day.
-      </p>
-      <p class=\"text-secondary mb-3\">
-        We curate public-domain works from Aozora Bunko and publish clean, readable translations.
-      </p>
-      <div class=\"d-flex flex-wrap gap-2\">
-        <a class=\"btn btn-dark\" href=\"{latest_link}\">Read latest translation</a>
-        <a class=\"btn btn-outline-secondary\" href=\"#featured\">Start with 3 picks</a>
-      </div>
+    </div>
+
+    <div
+      style="position:absolute; bottom:0; left:0; width:100%; line-height:0;"
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
+           style="display:block; width:100%; height:60px;">
+        <path
+          d="M0,40 C150,10 350,55 600,30 C850,5 1050,50 1200,35 L1200,60 L0,60 Z"
+          fill="#FAF7F0"
+        />
+      </svg>
     </div>
   </header>
 
-  <main class=\"container my-4\">
-    <section id=\"featured\" class=\"mb-5\">
-      <h2 class=\"h5 mb-3\">Recommended first reads</h2>
-      <div class=\"row g-3\">{featured}</div>
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <section id="featured" class="mb-10">
+      <p class="az-section-label">Recommended first reads</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">{featured}</div>
     </section>
 
     <section>
-      <h2 class=\"h5 mb-3\">All translations</h2>
-      <div class=\"row g-3\">{all_cards}</div>
+      <p class="az-section-label">All translations</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">{all_cards}</div>
     </section>
   </main>
+
+  <footer class="max-w-5xl mx-auto px-6 pb-12">
+    <div style="border-top:1px solid #E8E4DC; padding-top:2rem; margin-top:2rem;">
+      <p class="az-footer-text">
+        Translations generated from
+        <a href="https://www.aozora.gr.jp/" target="_blank" rel="noopener" class="az-link">
+          Aozora Bunko
+        </a>
+        public-domain works. English translations: <strong>CC0 1.0 Universal</strong>.
+      </p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init({{ once: true, duration: 650, easing: 'ease-out' }});</script>
 </body>
 </html>"""
 
