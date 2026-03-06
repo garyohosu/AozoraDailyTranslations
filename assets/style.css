@@ -1,5 +1,149 @@
+/* ══════════════════════════════════════════════════
+   SHARED — used by both index and work pages
+   ══════════════════════════════════════════════════ */
 body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
 .site-brand { font-family: 'Libre Baskerville', serif; letter-spacing: .2px; }
+
+/* Work-page cards (Bootstrap layout) */
 .work-card { border: 1px solid #eceff3; border-radius: 14px; }
 .work-card:hover { box-shadow: 0 8px 24px rgba(21, 26, 35, 0.08); }
 .translation p { line-height: 1.85; }
+
+
+/* ══════════════════════════════════════════════════
+   INDEX PAGE — "Sumi & Vermillion" design
+   ══════════════════════════════════════════════════ */
+
+/* Large "青空" watermark in header background */
+.az-watermark {
+  position: absolute;
+  top: 50%;
+  right: -0.05em;
+  transform: translateY(-50%);
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(130px, 20vw, 290px);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.045);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* "青空文庫 × English" small label */
+.az-jp-label {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.75rem;
+}
+
+/* Site title */
+.az-site-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+/* Tagline */
+.az-site-desc {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.7;
+  max-width: 22rem;
+}
+
+/* "DAILY" badge */
+.az-daily-badge {
+  display: inline-block;
+  background: #C0392B;
+  color: white;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* Section eyebrow */
+.az-section-label {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #C0392B;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Work Cards ──────────────────────────────────── */
+.az-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-left: 3px solid #C0392B;
+  border-radius: 0 14px 14px 0;
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(26, 26, 46, 0.06);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  text-decoration: none;
+  color: #2C2C3E;
+  height: 100%;
+}
+.az-card:hover {
+  box-shadow: 0 12px 40px rgba(26, 26, 46, 0.14);
+  transform: translateY(-3px);
+  color: #2C2C3E;
+  text-decoration: none;
+}
+.az-card-date {
+  display: block;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: #9999AA;
+  margin-bottom: 0.6rem;
+}
+.az-card-title {
+  display: block;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.2rem;
+  color: #1A1A2E;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  flex: 1;
+}
+.az-card-cta {
+  display: inline-block;
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #C0392B;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, letter-spacing 0.2s ease;
+}
+.az-card:hover .az-card-cta {
+  opacity: 1;
+  letter-spacing: 0.04em;
+}
+
+/* Footer */
+.az-footer-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: #9999AA;
+  line-height: 1.6;
+}
+.az-link {
+  color: #C0392B;
+  text-decoration: none;
+}
+.az-link:hover {
+  text-decoration: underline;
+}
