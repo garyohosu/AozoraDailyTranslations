@@ -3,7 +3,7 @@
 [![CI](https://github.com/garyohosu/AozoraDailyTranslations/actions/workflows/ci.yml/badge.svg)](https://github.com/garyohosu/AozoraDailyTranslations/actions/workflows/ci.yml)
 [![Pages](https://github.com/garyohosu/AozoraDailyTranslations/actions/workflows/pages.yml/badge.svg)](https://github.com/garyohosu/AozoraDailyTranslations/actions/workflows/pages.yml)
 
-青空文庫のパブリックドメイン作品を毎日1作品、自動翻訳して GitHub Pages に英語で公開するパイプライン。
+青空文庫のパブリックドメイン作品を毎日1作品、自動翻訳して GitHub Pages に英語で公開するAI翻訳出版社。
 https://garyohosu.github.io/AozoraDailyTranslations/
 
 - 候補不足時は `DATA/works.json` を自動補充（既定: 200件まで）
