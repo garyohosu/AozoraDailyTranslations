@@ -44,6 +44,7 @@ WORKS_DIR = ROOT / "works"
 
 AOZORA_DEFAULT_SOURCE = "https://www.aozora.gr.jp/index_pages/person879.html"  # 芥川龍之介
 AUTO_FILL_TARGET = int(os.environ.get("AOZORA_WORKS_TARGET", "200"))
+EN_MAP_FILE = DATA / "en_map.json"
 
 def _today_jst() -> str:
     return dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat()
@@ -109,6 +110,19 @@ def _save_works(works: list[WorkEntry]) -> None:
         json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+
+
+def _load_en_map() -> dict:
+    if not EN_MAP_FILE.exists():
+        return {}
+    try:
+        return json.loads(EN_MAP_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _save_en_map(m: dict) -> None:
+    EN_MAP_FILE.write_text(json.dumps(m, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def _slugify(text: str) -> str:
@@ -212,14 +226,18 @@ def _build_work_from_card(card_url: str):
     if bad_title or bad_author:
         return None
 
-    card_id = _card_id_from_url(card_url)
-    title_en = title_ja if not _has_non_ascii(title_ja) else f"Aozora Work No.{card_id}"
+    if not _has_non_ascii(title_ja):
+        title_en = title_ja
+    else:
+        title_en = _translate_label_ja_to_en(title_ja, "title")
 
     author_romaji = _extract_author_romaji(soup)
     if author_romaji:
         author_en = author_romaji
+    elif not _has_non_ascii(author_ja):
+        author_en = author_ja
     else:
-        author_en = author_ja if not _has_non_ascii(author_ja) else f"Author No.{card_id}"
+        author_en = _translate_label_ja_to_en(author_ja, "author")
 
     return WorkEntry(
         aozora_card_url=card_url,
@@ -243,14 +261,26 @@ def _autofill_works_if_needed(target_count: int = AUTO_FILL_TARGET) -> None:
         if w.author_en == "作品データ":
             continue
 
-        # Backfill legacy rows where *_en is still Japanese text
-        if _has_non_ascii(w.title_en) or _has_non_ascii(w.author_en):
-            card_id = _card_id_from_url(w.aozora_card_url)
-            # keep Japanese in *_ja, normalize *_en to ASCII-safe values
-            if _has_non_ascii(w.title_en):
-                w.title_en = f"Aozora Work No.{card_id}"
-            if _has_non_ascii(w.author_en):
-                w.author_en = f"Author No.{card_id}"
+        # Backfill legacy rows where *_en is JP text or placeholder strings
+        need_title = _has_non_ascii(w.title_en) or w.title_en.startswith("Aozora Work No.")
+        need_author = _has_non_ascii(w.author_en) or w.author_en.startswith("Author No.")
+
+        if need_title:
+            w.title_en = _translate_label_ja_to_en(w.title_ja or w.title_en, "title")
+        if need_author:
+            # try roma label from card first
+            try:
+                rr = requests.get(
+                    w.aozora_card_url,
+                    timeout=20,
+                    headers={"User-Agent": "AozoraDailyTranslations/1.0"},
+                )
+                rr.raise_for_status()
+                ss = BeautifulSoup(rr.content.decode("utf-8", errors="ignore"), "html.parser")
+                roma = _extract_author_romaji(ss)
+            except Exception:
+                roma = ""
+            w.author_en = roma or _translate_label_ja_to_en(w.author_ja or w.author_en, "author")
         cleaned.append(w)
     works = cleaned
 
@@ -360,6 +390,41 @@ def _ask_local_llm(prompt: str) -> str:
         except Exception as e:
             last = e
     raise RuntimeError(f"local llm failed: {last}")
+
+
+def _translate_label_ja_to_en(text_ja: str, kind: str = "title") -> str:
+    txt = (text_ja or "").strip()
+    if not txt:
+        return ""
+
+    en_map = _load_en_map()
+    cache_key = f"{kind}:{txt}"
+    cached = en_map.get(cache_key)
+    if cached:
+        return str(cached)
+
+    prompt = (
+        "Translate Japanese text into natural English. Return only translated text, no quotes.\n"
+        "If person name, use common romanization.\n"
+        f"kind={kind}\n"
+        f"text={txt}"
+    )
+
+    result = None
+    try:
+        result = _ask_codex(prompt, timeout=120)
+    except Exception:
+        try:
+            result = _ask_local_llm(prompt)
+        except Exception:
+            result = txt
+
+    out = (result or txt).strip().splitlines()[0].strip('"').strip("'")
+    if not out:
+        out = txt
+    en_map[cache_key] = out
+    _save_en_map(en_map)
+    return out
 
 
 def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResult:
