@@ -154,6 +154,17 @@ class WorkPageGenerator:
         {body_html}
       </section>
 
+      <!-- In-article AdSense block -->
+      <section class="my-4" aria-label="Advertisement">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6743751614716161"
+             data-ad-slot="4860353656"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </section>
+
       <!-- Mandatory credits (SPEC.md §4.4) -->
       <footer class="az-work-credits">
         <p>Source (Japanese text): <strong>Aozora Bunko (Public Domain in Japan)</strong></p>
