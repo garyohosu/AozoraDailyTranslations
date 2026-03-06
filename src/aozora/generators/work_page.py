@@ -162,7 +162,7 @@ class WorkPageGenerator:
              data-ad-slot="4860353656"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>
       </section>
 
       <!-- Mandatory credits (SPEC.md §4.4) -->

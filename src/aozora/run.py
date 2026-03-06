@@ -500,16 +500,30 @@ def _write_index() -> None:
             f'<div class="work-card bg-white p-4 h-100">'
             f'<p class="text-secondary small mb-2">{date}</p>'
             f'<h3 class="h5 mb-2">{title}</h3>'
-            f'<p class="text-muted mb-0">Read today\'s translation</p>'
+            f'<p class="text-muted mb-0">Read translation</p>'
             f"</div></a></article>"
         )
 
-    html = """<!doctype html>
+    featured = "\n".join(cards[:3]) if cards else '<p class="text-muted">No works yet.</p>'
+    all_cards = "\n".join(cards) if cards else '<p class="text-muted">No works yet.</p>'
+
+    latest_link = "#"
+    if works:
+        latest_link = (
+            f"./works/{works[0].parent.name}/index.html"
+            "?utm_source=quora&utm_medium=social&utm_campaign=aozora_launch"
+        )
+
+    html = f"""<!doctype html>
 <html lang=\"en\">
 <head>
   <meta charset=\"utf-8\">
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
   <title>Aozora Daily Translations</title>
+  <meta
+    name=\"description\"
+    content=\"Daily English translations of public-domain Japanese literature from Aozora Bunko.\"
+  >
   <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\">
   <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">
   <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>
@@ -521,22 +535,37 @@ def _write_index() -> None:
 </head>
 <body class=\"bg-body-tertiary\">
   <header class=\"border-bottom bg-white\">
-    <div class=\"container py-4\">
+    <div class=\"container py-4 py-md-5\">
       <div class=\"d-flex justify-content-between align-items-center\">
         <h1 class=\"h3 mb-0 site-brand\">Aozora Daily Translations</h1>
         <span class=\"badge text-bg-dark\">Daily</span>
       </div>
-      <p class=\"text-secondary mt-2 mb-0\">
-        Modern English translations of Aozora Bunko public-domain works.
+      <p class=\"text-secondary mt-3 mb-2\">
+        Read one Japanese classic in modern English every day.
       </p>
+      <p class=\"text-secondary mb-3\">
+        We curate public-domain works from Aozora Bunko and publish clean, readable translations.
+      </p>
+      <div class=\"d-flex flex-wrap gap-2\">
+        <a class=\"btn btn-dark\" href=\"{latest_link}\">Read latest translation</a>
+        <a class=\"btn btn-outline-secondary\" href=\"#featured\">Start with 3 picks</a>
+      </div>
     </div>
   </header>
 
   <main class=\"container my-4\">
-    <div class=\"row g-3\">{cards}</div>
+    <section id=\"featured\" class=\"mb-5\">
+      <h2 class=\"h5 mb-3\">Recommended first reads</h2>
+      <div class=\"row g-3\">{featured}</div>
+    </section>
+
+    <section>
+      <h2 class=\"h5 mb-3\">All translations</h2>
+      <div class=\"row g-3\">{all_cards}</div>
+    </section>
   </main>
 </body>
-</html>""".format(cards="\n".join(cards) if cards else '<p class="text-muted">No works yet.</p>')
+</html>"""
 
     (ROOT / "index.html").write_text(html, encoding="utf-8")
 
