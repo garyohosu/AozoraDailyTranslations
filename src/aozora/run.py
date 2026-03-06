@@ -504,7 +504,10 @@ def _write_index() -> None:
             f'</a></div>'
         )
 
-    all_cards = "\n".join(cards) if cards else '<p class="text-muted">No works yet.</p>'
+    if len(cards) > 3:
+        all_cards = "\n".join(cards[3:])
+    else:
+        all_cards = '<p class="text-muted">No more items yet.</p>'
 
     html = f"""<!doctype html>
 <html lang="en">
