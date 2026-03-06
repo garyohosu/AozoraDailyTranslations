@@ -290,9 +290,39 @@ def _fetch_clean_ja(txt_url: str, timeout: int = 30) -> str:
     r.raise_for_status()
     html = r.content.decode("cp932", errors="ignore")
     soup = BeautifulSoup(html, "html.parser")
-    text = soup.get_text("\n")
+
+    # Prefer the main body container and avoid bibliographic sections.
+    main = soup.select_one(".main_text") or soup.find("div", id="honbun")
+    text = main.get_text("\n") if main else soup.get_text("\n")
+
     text = re.sub(r"［＃[^］]*］", "", text)
     text = re.sub(r"《.+?》", "", text)
+
+    # Split out bibliographic/production metadata that should not be translated.
+    lines = [ln.strip() for ln in text.splitlines()]
+    cutoff_markers = (
+        "底本：",
+        "初出：",
+        "注記：",
+        "入力：",
+        "校正：",
+        "作成日：",
+        "更新日：",
+        "青空文庫作成ファイル：",
+        "このファイルは、インターネット図書館",
+        "このファイルは、",
+        "作品データ",
+    )
+    body_lines = []
+    for ln in lines:
+        if not ln:
+            body_lines.append("")
+            continue
+        if any(ln.startswith(m) for m in cutoff_markers):
+            break
+        body_lines.append(ln)
+
+    text = "\n".join(body_lines)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
