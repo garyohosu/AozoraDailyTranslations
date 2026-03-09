@@ -510,7 +510,7 @@ def _write_index() -> None:
             f'<span class="az-card-date">{date}</span>'
             f'<span class="az-card-title">{title}</span>'
             f'<span class="az-card-cta">Read translation →</span>'
-            f'</a></div>'
+            f"</a></div>"
         )
 
     all_cards = "\n".join(cards) if cards else '<p class="text-muted">No items yet.</p>'
