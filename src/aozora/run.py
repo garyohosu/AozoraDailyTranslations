@@ -437,30 +437,79 @@ def _translate_label_ja_to_en(text_ja: str, kind: str = "title") -> str:
     return out
 
 
-def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResult:
+_CHUNK_LIMIT = 8000  # chars; texts longer than this are split for translation
+
+
+def _split_chunks(text: str, limit: int = _CHUNK_LIMIT) -> list[str]:
+    """Split text at paragraph boundaries so each chunk stays under limit."""
+    if len(text) <= limit:
+        return [text]
+    paragraphs = text.split("\n\n")
+    chunks: list[str] = []
+    current: list[str] = []
+    size = 0
+    for para in paragraphs:
+        if size + len(para) > limit and current:
+            chunks.append("\n\n".join(current))
+            current = []
+            size = 0
+        current.append(para)
+        size += len(para)
+    if current:
+        chunks.append("\n\n".join(current))
+    return chunks
+
+
+def _translate_chunk(
+    chunk: str, title_en: str, author_en: str, with_intro: bool
+) -> tuple[str, str]:
+    """Translate one chunk; return (translation_en, introduction_en)."""
+    intro_instruction = (
+        "Return JSON with keys: translation_en, introduction_en (100-150 words)."
+        if with_intro
+        else "Return JSON with keys: translation_en, introduction_en (empty string)."
+    )
     prompt = (
         "Translate the following Japanese literary text into natural modern English.\n"
         "Translate the complete text in full — do not omit or truncate any sections.\n"
-        "Return JSON only with keys: translation_en, introduction_en.\n"
-        f"title: {title_en}\nauthor: {author_en}\n\nTEXT:\n{clean_ja}"
+        f"{intro_instruction}\n"
+        f"title: {title_en}\nauthor: {author_en}\n\nTEXT:\n{chunk}"
     )
+    codex_timeout = max(600, len(chunk) // 1000 * 60)
+    raw = _ask_codex(prompt, timeout=codex_timeout)
+    data = json.loads(raw[raw.find("{") : raw.rfind("}") + 1])
+    return str(data.get("translation_en", "")).strip(), str(data.get("introduction_en", "")).strip()
+
+
+def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResult:
+    chunks = _split_chunks(clean_ja)
 
     # primary: Codex CLI
     codex_err = None
     try:
-        raw = _ask_codex(prompt, timeout=600)
-        data = json.loads(raw[raw.find("{") : raw.rfind("}") + 1])
+        parts: list[str] = []
+        intro_en = ""
+        for i, chunk in enumerate(chunks):
+            tr_en, intro = _translate_chunk(chunk, title_en, author_en, with_intro=(i == 0))
+            parts.append(tr_en)
+            if i == 0:
+                intro_en = intro
         return TranslationResult(
-            translation_en=str(data.get("translation_en", "")).strip(),
-            introduction_en=str(data.get("introduction_en", "")).strip(),
+            translation_en="\n\n".join(parts),
+            introduction_en=intro_en,
             source="codex-cli",
         )
     except Exception as exc:
         codex_err = exc
 
-    # fallback: local LLM
+    # fallback: local LLM (single-pass, best effort)
     local_err = None
     try:
+        prompt = (
+            "Translate the following Japanese literary text into natural modern English.\n"
+            "Return JSON only with keys: translation_en, introduction_en.\n"
+            f"title: {title_en}\nauthor: {author_en}\n\nTEXT:\n{clean_ja}"
+        )
         raw = _ask_local_llm(prompt)
         data = json.loads(raw[raw.find("{") : raw.rfind("}") + 1])
         return TranslationResult(
