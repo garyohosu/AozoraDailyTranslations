@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-03-09",
+  "run_datetime_jst": "2026-03-09T09:02:01.048481+09:00",
+  "attempts": [
+    {
+      "index": 5,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43014.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-09-the-god-agni/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
