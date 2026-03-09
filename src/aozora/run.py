@@ -18,6 +18,7 @@ import datetime as dt
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -359,10 +360,18 @@ def _fetch_clean_ja(txt_url: str, timeout: int = 30) -> str:
 
 
 def _ask_codex(prompt: str, timeout: int = 600) -> str:
-    res = subprocess.run(["codex", "exec", prompt], capture_output=True, text=True, timeout=timeout)
+    codex_bin = shutil.which("codex") or "codex"
+    res = subprocess.run(
+        [codex_bin, "exec", "-"],
+        input=prompt.encode("utf-8"),
+        capture_output=True,
+        timeout=timeout,
+        shell=(os.name == "nt"),
+    )
     if res.returncode != 0:
-        raise RuntimeError(res.stderr.strip() or "codex failed")
-    out = (res.stdout or "").strip()
+        msg = (res.stderr or b"").decode("utf-8", errors="replace").strip()
+        raise RuntimeError(msg or "codex failed")
+    out = (res.stdout or b"").decode("utf-8", errors="replace").strip()
     if not out:
         raise RuntimeError("codex empty output")
     return out
@@ -429,11 +438,11 @@ def _translate_label_ja_to_en(text_ja: str, kind: str = "title") -> str:
 
 
 def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResult:
-    excerpt = clean_ja[:3500]
     prompt = (
-        "Translate the following Japanese literary excerpt into natural modern English.\n"
+        "Translate the following Japanese literary text into natural modern English.\n"
+        "Translate the complete text in full — do not omit or truncate any sections.\n"
         "Return JSON only with keys: translation_en, introduction_en.\n"
-        f"title: {title_en}\nauthor: {author_en}\n\nTEXT:\n{excerpt}"
+        f"title: {title_en}\nauthor: {author_en}\n\nTEXT:\n{clean_ja}"
     )
 
     # primary: Codex CLI
