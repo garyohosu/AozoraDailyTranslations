@@ -1,13 +1,13 @@
 {
   "run_date": "2026-03-10",
-  "run_datetime_jst": "2026-03-10T09:05:20.519404+09:00",
+  "run_datetime_jst": "2026-03-10T09:06:35.595476+09:00",
   "attempts": [
     {
-      "index": 6,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card3804.html",
+      "index": 7,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card21.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-10-the-devil/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-10-asakusa-park/index.html"
     }
   ],
   "final_status": "SUCCESS",
