@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-03-11",
+  "run_datetime_jst": "2026-03-11T08:48:11.350448+09:00",
+  "attempts": [
+    {
+      "index": 8,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43361.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-11-feeling-like-an-elder-brother/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
