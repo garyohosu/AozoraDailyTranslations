@@ -1,13 +1,13 @@
 {
   "run_date": "2026-03-11",
-  "run_datetime_jst": "2026-03-11T08:48:11.350448+09:00",
+  "run_datetime_jst": "2026-03-11T09:02:29.661884+09:00",
   "attempts": [
     {
-      "index": 8,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card43361.html",
+      "index": 9,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card14.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-11-feeling-like-an-elder-brother/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-11-ababababa/index.html"
     }
   ],
   "final_status": "SUCCESS",
