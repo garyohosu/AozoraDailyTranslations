@@ -1,13 +1,13 @@
 {
   "run_date": "2026-03-11",
-  "run_datetime_jst": "2026-03-11T09:02:29.661884+09:00",
+  "run_datetime_jst": "2026-03-11T09:03:26.875755+09:00",
   "attempts": [
     {
-      "index": 9,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card14.html",
+      "index": 10,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card60574.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-11-ababababa/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-11-afterlife/index.html"
     }
   ],
   "final_status": "SUCCESS",
