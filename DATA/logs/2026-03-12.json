@@ -1,13 +1,13 @@
 {
   "run_date": "2026-03-12",
-  "run_datetime_jst": "2026-03-12T09:02:16.299090+09:00",
+  "run_datetime_jst": "2026-03-12T09:05:59.001235+09:00",
   "attempts": [
     {
-      "index": 11,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card1138.html",
+      "index": 12,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card19.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-12-opium/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-12-a-fool-s-life/index.html"
     }
   ],
   "final_status": "SUCCESS",
