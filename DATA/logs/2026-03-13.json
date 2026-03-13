@@ -1,13 +1,13 @@
 {
   "run_date": "2026-03-13",
-  "run_datetime_jst": "2026-03-13T09:05:40.933166+09:00",
+  "run_datetime_jst": "2026-03-13T09:06:50.558850+09:00",
   "attempts": [
     {
-      "index": 13,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card73.html",
+      "index": 14,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card20.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-13-a-tale-of-vendetta/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-13-a-letter-to-an-old-friend/index.html"
     }
   ],
   "final_status": "SUCCESS",
