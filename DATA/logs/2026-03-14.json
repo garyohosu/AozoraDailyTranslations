@@ -1,13 +1,13 @@
 {
   "run_date": "2026-03-14",
-  "run_datetime_jst": "2026-03-14T09:01:04.638651+09:00",
+  "run_datetime_jst": "2026-03-14T09:03:43.784394+09:00",
   "attempts": [
     {
-      "index": 15,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card3827.html",
+      "index": 16,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card122.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-14-a-socialist/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-14-oishi-kuranosuke-on-a-certain-day/index.html"
     }
   ],
   "final_status": "SUCCESS",
