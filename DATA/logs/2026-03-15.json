@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-03-15",
+  "run_datetime_jst": "2026-03-15T09:04:13.601483+09:00",
+  "attempts": [
+    {
+      "index": 17,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card129.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-15-a-love-novel/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
