@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-03-20",
+  "run_datetime_jst": "2026-03-20T09:00:27.741669+09:00",
+  "attempts": [
+    {
+      "index": 22,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3750.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-20-it-depends-on-what-you-mean-by-ism/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
