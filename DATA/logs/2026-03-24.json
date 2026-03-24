@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-03-24",
+  "run_datetime_jst": "2026-03-24T09:00:48.998076+09:00",
+  "attempts": [
+    {
+      "index": 23,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3748.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-03-24-when-i-feel-most-motivated/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
