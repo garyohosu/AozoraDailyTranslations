@@ -43,6 +43,8 @@ jobs:
           [ -d works ]        && cp -r works _site/      || true
           [ -d authors ]      && cp -r authors _site/    || true
           [ -d assets ]       && cp -r assets _site/     || true
+          [ -d privacy-policy ] && cp -r privacy-policy _site/ || true
+          [ -d contact ]      && cp -r contact _site/    || true
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
