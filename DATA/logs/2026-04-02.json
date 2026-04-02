@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-02",
+  "run_datetime_jst": "2026-04-02T09:00:33.260039+09:00",
+  "attempts": [
+    {
+      "index": 30,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card4274.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-02-mr-iwano-h-mei/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
