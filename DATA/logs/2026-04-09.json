@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-09",
-  "run_datetime_jst": "2026-04-09T09:00:35.879857+09:00",
+  "run_datetime_jst": "2026-04-09T09:03:52.899924+09:00",
   "attempts": [
     {
-      "index": 36,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card3823.html",
+      "index": 37,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card176.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-09-sleep-talk/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-09-luck/index.html"
     }
   ],
   "final_status": "SUCCESS",
