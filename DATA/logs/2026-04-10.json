@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-10",
+  "run_datetime_jst": "2026-04-10T09:00:31.493734+09:00",
+  "attempts": [
+    {
+      "index": 38,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3751.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-10-an-eternally-unpleasant-double-life/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
