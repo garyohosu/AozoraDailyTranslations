@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-10",
-  "run_datetime_jst": "2026-04-10T09:00:31.493734+09:00",
+  "run_datetime_jst": "2026-04-10T09:02:54.854788+09:00",
   "attempts": [
     {
-      "index": 38,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card3751.html",
+      "index": 39,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card35.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-10-an-eternally-unpleasant-double-life/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-10-the-measure-of-a-hero/index.html"
     }
   ],
   "final_status": "SUCCESS",
