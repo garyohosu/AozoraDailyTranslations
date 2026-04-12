@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-12",
+  "run_datetime_jst": "2026-04-12T09:03:16.639288+09:00",
+  "attempts": [
+    {
+      "index": 42,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card118.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-12-aged-susanoo/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
