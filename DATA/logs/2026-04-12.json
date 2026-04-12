@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-12",
-  "run_datetime_jst": "2026-04-12T09:03:16.639288+09:00",
+  "run_datetime_jst": "2026-04-12T09:05:26.993960+09:00",
   "attempts": [
     {
-      "index": 42,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card118.html",
+      "index": 43,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card117.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-12-aged-susanoo/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-12-picture-scroll-of-rebirth/index.html"
     }
   ],
   "final_status": "SUCCESS",
