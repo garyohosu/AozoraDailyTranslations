@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-13",
-  "run_datetime_jst": "2026-04-13T09:00:39.916800+09:00",
+  "run_datetime_jst": "2026-04-13T09:03:12.233337+09:00",
   "attempts": [
     {
-      "index": 44,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card3763.html",
+      "index": 45,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card123.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-13-the-parrot/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-13-water-of-the-great-river/index.html"
     }
   ],
   "final_status": "SUCCESS",
