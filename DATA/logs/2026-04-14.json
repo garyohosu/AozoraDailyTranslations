@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-14",
-  "run_datetime_jst": "2026-04-14T09:03:02.838187+09:00",
+  "run_datetime_jst": "2026-04-14T09:04:24.117797+09:00",
   "attempts": [
     {
-      "index": 46,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card49328.html",
+      "index": 47,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3824.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-14-okubo-koshu/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-14-mr-o-s-new-autumn/index.html"
     }
   ],
   "final_status": "SUCCESS",
