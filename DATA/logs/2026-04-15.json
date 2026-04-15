@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-15",
-  "run_datetime_jst": "2026-04-15T09:01:32.472423+09:00",
+  "run_datetime_jst": "2026-04-15T09:04:17.596946+09:00",
   "attempts": [
     {
-      "index": 48,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card115.html",
+      "index": 49,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card116.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-15-memoranda-of-ogata-ryosai/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-15-ogin/index.html"
     }
   ],
   "final_status": "SUCCESS",
