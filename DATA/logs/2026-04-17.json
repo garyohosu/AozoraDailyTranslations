@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-17",
-  "run_datetime_jst": "2026-04-17T09:02:02.897761+09:00",
+  "run_datetime_jst": "2026-04-17T09:03:21.592046+09:00",
   "attempts": [
     {
-      "index": 52,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card126.html",
+      "index": 53,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3826.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-17-otomi-s-chastity/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-17-tag/index.html"
     }
   ],
   "final_status": "SUCCESS",
