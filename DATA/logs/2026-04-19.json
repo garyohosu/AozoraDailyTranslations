@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-19",
+  "run_datetime_jst": "2026-04-19T09:00:45.884999+09:00",
+  "attempts": [
+    {
+      "index": 56,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card120.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-19-woman/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
