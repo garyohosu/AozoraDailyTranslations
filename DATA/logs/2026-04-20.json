@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-20",
+  "run_datetime_jst": "2026-04-20T09:02:15.639125+09:00",
+  "attempts": [
+    {
+      "index": 58,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card66.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-20-a-modern-murder/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
