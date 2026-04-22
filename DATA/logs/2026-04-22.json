@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-22",
-  "run_datetime_jst": "2026-04-22T09:00:39.062889+09:00",
+  "run_datetime_jst": "2026-04-22T09:03:36.788525+09:00",
   "attempts": [
     {
-      "index": 62,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card43365.html",
+      "index": 63,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card64.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-22-kaku-san-and-appetite/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-22-shadow/index.html"
     }
   ],
   "final_status": "SUCCESS",
