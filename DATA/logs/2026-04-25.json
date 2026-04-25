@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-25",
-  "run_datetime_jst": "2026-04-25T09:01:02.145000+09:00",
+  "run_datetime_jst": "2026-04-25T09:08:54.376335+09:00",
   "attempts": [
     {
-      "index": 66,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card3772.html",
+      "index": 67,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card69.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-25-school-friends/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-25-kappa/index.html"
     }
   ],
   "final_status": "SUCCESS",
