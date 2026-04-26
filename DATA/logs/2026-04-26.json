@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-26",
-  "run_datetime_jst": "2026-04-26T09:07:13.294446+09:00",
+  "run_datetime_jst": "2026-04-26T09:08:33.654788+09:00",
   "attempts": [
     {
-      "index": 68,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card45761.html",
+      "index": 69,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3802.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-26-kappa/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-26-pumpkin/index.html"
     }
   ],
   "final_status": "SUCCESS",
