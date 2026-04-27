@@ -1,13 +1,13 @@
 {
   "run_date": "2026-04-27",
-  "run_datetime_jst": "2026-04-27T09:02:06.920999+09:00",
+  "run_datetime_jst": "2026-04-27T09:03:46.199941+09:00",
   "attempts": [
     {
-      "index": 70,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card68.html",
+      "index": 71,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3766.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-27-the-smile-of-the-gods/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-27-people-of-masks/index.html"
     }
   ],
   "final_status": "SUCCESS",
