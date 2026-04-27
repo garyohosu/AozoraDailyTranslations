@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-27",
+  "run_datetime_jst": "2026-04-27T09:02:06.920999+09:00",
+  "attempts": [
+    {
+      "index": 70,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card68.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-27-the-smile-of-the-gods/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
