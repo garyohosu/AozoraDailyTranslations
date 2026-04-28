@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-28",
+  "run_datetime_jst": "2026-04-28T09:00:29.579527+09:00",
+  "attempts": [
+    {
+      "index": 72,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43366.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-28-duck-hunting/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
