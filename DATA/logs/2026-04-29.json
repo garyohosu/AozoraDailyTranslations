@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-29",
+  "run_datetime_jst": "2026-04-29T09:00:39.408441+09:00",
+  "attempts": [
+    {
+      "index": 74,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card29.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-29-carmen/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
