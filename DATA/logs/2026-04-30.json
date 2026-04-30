@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-04-30",
+  "run_datetime_jst": "2026-04-30T09:01:17.754987+09:00",
+  "attempts": [
+    {
+      "index": 76,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card71.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-04-30-he-part-two/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
