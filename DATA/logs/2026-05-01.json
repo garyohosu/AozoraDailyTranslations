@@ -1,13 +1,13 @@
 {
   "run_date": "2026-05-01",
-  "run_datetime_jst": "2026-05-01T09:00:59.918660+09:00",
+  "run_datetime_jst": "2026-05-01T09:02:42.129896+09:00",
   "attempts": [
     {
-      "index": 78,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card43367.html",
+      "index": 79,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3809.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-01-his-eighteen-merits/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-01-hanshan-and-shide/index.html"
     }
   ],
   "final_status": "SUCCESS",
