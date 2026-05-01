@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-05-01",
+  "run_datetime_jst": "2026-05-01T09:00:59.918660+09:00",
+  "attempts": [
+    {
+      "index": 78,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43367.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-01-his-eighteen-merits/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
