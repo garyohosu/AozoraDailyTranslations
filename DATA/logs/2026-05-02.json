@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-05-02",
+  "run_datetime_jst": "2026-05-02T09:00:34.116283+09:00",
+  "attempts": [
+    {
+      "index": 80,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3747.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-02-appraisal/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
