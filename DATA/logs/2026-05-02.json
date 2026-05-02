@@ -1,13 +1,13 @@
 {
   "run_date": "2026-05-02",
-  "run_datetime_jst": "2026-05-02T09:00:34.116283+09:00",
+  "run_datetime_jst": "2026-05-02T09:05:51.619885+09:00",
   "attempts": [
     {
-      "index": 80,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card3747.html",
+      "index": 81,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card77.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-02-appraisal/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-02-a-strange-reunion/index.html"
     }
   ],
   "final_status": "SUCCESS",
