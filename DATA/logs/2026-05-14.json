@@ -1,13 +1,13 @@
 {
   "run_date": "2026-05-14",
-  "run_datetime_jst": "2026-05-14T09:00:39.126263+09:00",
+  "run_datetime_jst": "2026-05-14T09:04:20.307232+09:00",
   "attempts": [
     {
-      "index": 84,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card43368.html",
+      "index": 85,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card80.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-14-preface-to-the-complete-works-of-kan-kikuchi/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-14-the-smoking-pipe/index.html"
     }
   ],
   "final_status": "SUCCESS",
