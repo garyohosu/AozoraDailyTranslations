@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-05-19",
+  "run_datetime_jst": "2026-05-19T10:05:54.825625+09:00",
+  "attempts": [
+    {
+      "index": 87,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card1137.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-19-kimono/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
