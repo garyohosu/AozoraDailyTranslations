@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-05-20",
+  "run_datetime_jst": "2026-05-20T09:00:34.112271+09:00",
+  "attempts": [
+    {
+      "index": 88,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card2327.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-20-ill-fortune/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
