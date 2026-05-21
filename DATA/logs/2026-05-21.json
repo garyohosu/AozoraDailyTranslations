@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-05-21",
+  "run_datetime_jst": "2026-05-21T09:00:28.143732+09:00",
+  "attempts": [
+    {
+      "index": 90,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3815.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-21-moral-tales/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
