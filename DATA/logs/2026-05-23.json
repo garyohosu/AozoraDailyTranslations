@@ -1,13 +1,13 @@
 {
   "run_date": "2026-05-23",
-  "run_datetime_jst": "2026-05-23T09:00:57.531373+09:00",
+  "run_datetime_jst": "2026-05-23T09:02:30.364876+09:00",
   "attempts": [
     {
-      "index": 94,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card78.html",
+      "index": 95,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card2328.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-23-general-kim/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-23-miscellany-from-kugenuma/index.html"
     }
   ],
   "final_status": "SUCCESS",
