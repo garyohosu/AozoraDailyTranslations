@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-05-23",
+  "run_datetime_jst": "2026-05-23T09:00:57.531373+09:00",
+  "attempts": [
+    {
+      "index": 94,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card78.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-05-23-general-kim/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
