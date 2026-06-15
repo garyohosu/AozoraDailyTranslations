@@ -1,13 +1,13 @@
 {
   "run_date": "2026-06-15",
-  "run_datetime_jst": "2026-06-15T10:00:04.229112+09:00",
+  "run_datetime_jst": "2026-06-15T10:24:46.495728+09:00",
   "attempts": [
     {
-      "index": 98,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card43369.html",
+      "index": 99,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43370.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-15-mr-mantaro-kubota/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-15-masao-kume/index.html"
     }
   ],
   "final_status": "SUCCESS",
