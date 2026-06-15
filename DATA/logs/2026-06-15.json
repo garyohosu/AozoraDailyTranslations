@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-06-15",
+  "run_datetime_jst": "2026-06-15T09:37:49.480618+09:00",
+  "attempts": [
+    {
+      "index": 96,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3784.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-15-the-peacock/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
