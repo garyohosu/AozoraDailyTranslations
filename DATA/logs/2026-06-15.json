@@ -1,13 +1,13 @@
 {
   "run_date": "2026-06-15",
-  "run_datetime_jst": "2026-06-15T09:58:25.901791+09:00",
+  "run_datetime_jst": "2026-06-15T10:00:04.229112+09:00",
   "attempts": [
     {
-      "index": 97,
-      "card_url": "https://www.aozora.gr.jp/cards/000879/card91.html",
+      "index": 98,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43369.html",
       "result": "SUCCESS",
       "reason": "",
-      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-15-the-story-of-a-head-falling-off/index.html"
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-15-mr-mantaro-kubota/index.html"
     }
   ],
   "final_status": "SUCCESS",
