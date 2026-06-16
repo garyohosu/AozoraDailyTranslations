@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-06-16",
+  "run_datetime_jst": "2026-06-16T09:00:36.022944+09:00",
+  "attempts": [
+    {
+      "index": 100,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43371.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-16-on-mr-masao-kume/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
