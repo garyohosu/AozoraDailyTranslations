@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-06-19",
+  "run_datetime_jst": "2026-06-19T09:04:57.741351+09:00",
+  "attempts": [
+    {
+      "index": 101,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card92.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-19-the-spider-s-thread/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
