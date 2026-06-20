@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-06-20",
+  "run_datetime_jst": "2026-06-20T09:05:07.135642+09:00",
+  "attempts": [
+    {
+      "index": 102,
+      "card_url": "https://www.aozora.gr.jp/cards/001086/card4311.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-20-clarimonde/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
