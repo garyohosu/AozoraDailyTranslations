@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-06-21",
+  "run_datetime_jst": "2026-06-21T09:02:53.698181+09:00",
+  "attempts": [
+    {
+      "index": 103,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card51865.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-21-voyage-log-of-the-battleship-kongo/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
