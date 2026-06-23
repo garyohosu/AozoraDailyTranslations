@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-06-23",
+  "run_datetime_jst": "2026-06-23T09:03:09.775032+09:00",
+  "attempts": [
+    {
+      "index": 105,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card37.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-23-immersed-in-popular-fiction/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
