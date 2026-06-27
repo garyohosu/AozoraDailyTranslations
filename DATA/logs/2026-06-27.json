@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-06-27",
+  "run_datetime_jst": "2026-06-27T09:00:59.220013+09:00",
+  "attempts": [
+    {
+      "index": 108,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card1131.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-06-27-difficulties-of-marriage-and-love/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
