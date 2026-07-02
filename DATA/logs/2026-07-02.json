@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-02",
+  "run_datetime_jst": "2026-07-02T13:31:50.137540+09:00",
+  "attempts": [
+    {
+      "index": 109,
+      "card_url": "https://www.aozora.gr.jp/cards/001085/card1128.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-02-from-the-celtic-twilight/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
