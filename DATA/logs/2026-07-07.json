@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-07",
+  "run_datetime_jst": "2026-07-07T17:39:50.871907+09:00",
+  "attempts": [
+    {
+      "index": 111,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3797.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-07-a-chronicle-of-lectures/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
