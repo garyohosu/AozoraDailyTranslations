@@ -438,6 +438,13 @@ def _translate_label_ja_to_en(text_ja: str, kind: str = "title") -> str:
 
 
 _CHUNK_LIMIT = 8000  # chars; texts longer than this are split for translation
+_SAFE_UNAVAILABLE_TRANSLATION = (
+    "Automatic translation is temporarily unavailable. Please check back later."
+)
+_SAFE_UNAVAILABLE_INTRO = (
+    "An English translation could not be generated in the latest run. "
+    "The source metadata and original Japanese reference remain available below."
+)
 
 
 def _split_chunks(text: str, limit: int = _CHUNK_LIMIT) -> list[str]:
@@ -521,12 +528,9 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
         local_err = exc
 
     # last resort
-    err_note = f"codex={codex_err}; local={local_err}"
     return TranslationResult(
-        translation_en="Automatic translation is temporarily unavailable. Please check back later.",
-        introduction_en=(
-            "This page was generated, but translation failed in the current run. " + err_note[:180]
-        ),
+        translation_en=_SAFE_UNAVAILABLE_TRANSLATION,
+        introduction_en=_SAFE_UNAVAILABLE_INTRO,
         source="fallback",
     )
 
@@ -662,11 +666,18 @@ def run(date: str) -> dict:
 
     qa = QAAuditor(QAGateConfig()).audit(tr.translation_en, fetch, genre=w.genre)
     if qa.status == "FAIL":
-        tr = TranslationResult(
-            translation_en=tr.translation_en,
-            introduction_en=(tr.introduction_en or "") + " (QA warning)",
-            source=tr.source,
-        )
+        if tr.source == "fallback" or qa.gates.get("boilerplate") == "FAIL":
+            tr = TranslationResult(
+                translation_en=_SAFE_UNAVAILABLE_TRANSLATION,
+                introduction_en=_SAFE_UNAVAILABLE_INTRO,
+                source="fallback",
+            )
+        else:
+            tr = TranslationResult(
+                translation_en=tr.translation_en,
+                introduction_en=(tr.introduction_en or "") + " (QA warning)",
+                source=tr.source,
+            )
 
     gen = WorkPageGenerator()
     body = gen.generate(w, tr, date)
