@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-14",
+  "run_datetime_jst": "2026-07-14T09:02:30.397988+09:00",
+  "attempts": [
+    {
+      "index": 116,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43376.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-14-rational-yet-rich-in-humanity/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
