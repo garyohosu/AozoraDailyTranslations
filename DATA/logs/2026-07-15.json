@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-15",
+  "run_datetime_jst": "2026-07-15T09:00:47.300678+09:00",
+  "attempts": [
+    {
+      "index": 117,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card88.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-15-the-millet-dream/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
