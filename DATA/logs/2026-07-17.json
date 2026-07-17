@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-17",
+  "run_datetime_jst": "2026-07-17T09:00:46.168203+09:00",
+  "attempts": [
+    {
+      "index": 119,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43373.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-17-mr-kosugi-misei/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
