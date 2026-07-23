@@ -21,14 +21,34 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-import requests
-from bs4 import BeautifulSoup
 
-from aozora.agents.qa_auditor import QAAuditor
-from aozora.generators.work_page import WorkPageGenerator
-from aozora.models import (
+def _maybe_reexec_in_venv() -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    venv_root = repo_root / ".venv"
+    venv_python = repo_root / ".venv" / "bin" / "python"
+    if not venv_python.exists():
+        return
+    try:
+        if Path(sys.prefix).resolve() == venv_root.resolve():
+            return
+    except OSError:
+        return
+    env = os.environ.copy()
+    env["PYTHONNOUSERSITE"] = "1"
+    os.execvpe(str(venv_python), [str(venv_python), *sys.argv], env)  # noqa: S606
+
+
+_maybe_reexec_in_venv()
+
+import requests  # noqa: E402
+from bs4 import BeautifulSoup  # noqa: E402
+
+from aozora.agents.qa_auditor import QAAuditor  # noqa: E402
+from aozora.generators.work_page import WorkPageGenerator  # noqa: E402
+from aozora.models import (  # noqa: E402
     AttemptLog,
     FetchResult,
     QAGateConfig,
@@ -46,6 +66,10 @@ WORKS_DIR = ROOT / "works"
 AOZORA_DEFAULT_SOURCE = "https://www.aozora.gr.jp/index_pages/person879.html"  # 芥川龍之介
 AUTO_FILL_TARGET = int(os.environ.get("AOZORA_WORKS_TARGET", "200"))
 EN_MAP_FILE = DATA / "en_map.json"
+_CODEX_LABEL_TIMEOUT = int(os.environ.get("AOZORA_CODEX_LABEL_TIMEOUT", "25"))
+_CODEX_CHUNK_TIMEOUT = int(os.environ.get("AOZORA_CODEX_CHUNK_TIMEOUT", "45"))
+_LOCAL_LLM_TIMEOUT = int(os.environ.get("AOZORA_LOCAL_LLM_TIMEOUT", "20"))
+_CHUNK_LIMIT = int(os.environ.get("AOZORA_CHUNK_LIMIT", "3000"))
 
 
 def _today_jst() -> str:
@@ -361,20 +385,41 @@ def _fetch_clean_ja(txt_url: str, timeout: int = 30) -> str:
 
 def _ask_codex(prompt: str, timeout: int = 600) -> str:
     codex_bin = shutil.which("codex") or "codex"
-    res = subprocess.run(
-        [codex_bin, "exec", "-"],
-        input=prompt.encode("utf-8"),
-        capture_output=True,
-        timeout=timeout,
-        shell=(os.name == "nt"),
-    )
-    if res.returncode != 0:
-        msg = (res.stderr or b"").decode("utf-8", errors="replace").strip()
-        raise RuntimeError(msg or "codex failed")
-    out = (res.stdout or b"").decode("utf-8", errors="replace").strip()
-    if not out:
-        raise RuntimeError("codex empty output")
-    return out
+    output_file = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            prefix="aozora_codex_",
+            suffix=".txt",
+            delete=False,
+        ) as tf:
+            output_file = tf.name
+
+        res = subprocess.run(
+            [codex_bin, "exec", "--output-last-message", output_file, "-"],
+            input=prompt,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=timeout,
+            shell=(os.name == "nt"),
+        )
+        if res.returncode != 0:
+            msg = (res.stderr or "").strip() or (res.stdout or "").strip()
+            raise RuntimeError(msg or "codex failed")
+
+        if output_file and Path(output_file).exists():
+            out = Path(output_file).read_text(encoding="utf-8").strip()
+        else:
+            out = (res.stdout or "").strip()
+        if not out:
+            raise RuntimeError("codex empty output")
+        return out
+    finally:
+        if output_file and os.path.exists(output_file):
+            try:
+                os.remove(output_file)
+            except OSError:
+                pass
 
 
 def _ask_local_llm(prompt: str) -> str:
@@ -391,7 +436,7 @@ def _ask_local_llm(prompt: str) -> str:
             resp = requests.post(
                 f"{ep}/api/generate",
                 json={"model": "phi3:mini", "prompt": prompt, "stream": False},
-                timeout=120,
+                timeout=_LOCAL_LLM_TIMEOUT,
             )
             resp.raise_for_status()
             out = (resp.json().get("response") or "").strip()
@@ -422,7 +467,7 @@ def _translate_label_ja_to_en(text_ja: str, kind: str = "title") -> str:
 
     result = None
     try:
-        result = _ask_codex(prompt, timeout=120)
+        result = _ask_codex(prompt, timeout=_CODEX_LABEL_TIMEOUT)
     except Exception:
         try:
             result = _ask_local_llm(prompt)
@@ -437,7 +482,6 @@ def _translate_label_ja_to_en(text_ja: str, kind: str = "title") -> str:
     return out
 
 
-_CHUNK_LIMIT = 8000  # chars; texts longer than this are split for translation
 _SAFE_UNAVAILABLE_TRANSLATION = (
     "Automatic translation is temporarily unavailable. Please check back later."
 )
@@ -447,21 +491,54 @@ _SAFE_UNAVAILABLE_INTRO = (
 )
 
 
-def _split_chunks(text: str, limit: int = _CHUNK_LIMIT) -> list[str]:
-    """Split text at paragraph boundaries so each chunk stays under limit."""
+def _progress(message: str) -> None:
+    sys.stderr.write(f"{message}\n")
+    sys.stderr.flush()
+
+
+def _split_long_piece(text: str, limit: int) -> list[str]:
     if len(text) <= limit:
         return [text]
-    paragraphs = text.split("\n\n")
+
+    pieces: list[str] = []
+    remaining = text.strip()
+    while len(remaining) > limit:
+        window = remaining[:limit]
+        split_at = max(
+            window.rfind("\n\n"),
+            window.rfind("。"),
+            window.rfind("！"),
+            window.rfind("？"),
+            window.rfind("\n"),
+        )
+        if split_at < limit // 2:
+            split_at = limit
+        else:
+            split_at += 1
+        pieces.append(remaining[:split_at].strip())
+        remaining = remaining[split_at:].strip()
+    if remaining:
+        pieces.append(remaining)
+    return pieces
+
+
+def _split_chunks(text: str, limit: int = _CHUNK_LIMIT) -> list[str]:
+    """Split text into bounded chunks, even if one paragraph is too long."""
+    if len(text) <= limit:
+        return [text]
+    paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
     chunks: list[str] = []
     current: list[str] = []
     size = 0
     for para in paragraphs:
-        if size + len(para) > limit and current:
-            chunks.append("\n\n".join(current))
-            current = []
-            size = 0
-        current.append(para)
-        size += len(para)
+        for piece in _split_long_piece(para, limit):
+            piece_len = len(piece)
+            if size + piece_len > limit and current:
+                chunks.append("\n\n".join(current))
+                current = []
+                size = 0
+            current.append(piece)
+            size += piece_len + (2 if len(current) > 1 else 0)
     if current:
         chunks.append("\n\n".join(current))
     return chunks
@@ -482,7 +559,7 @@ def _translate_chunk(
         f"{intro_instruction}\n"
         f"title: {title_en}\nauthor: {author_en}\n\nTEXT:\n{chunk}"
     )
-    codex_timeout = max(600, len(chunk) // 1000 * 60)
+    codex_timeout = min(max(_CODEX_CHUNK_TIMEOUT, len(chunk) // 1000 * 15), 90)
     raw = _ask_codex(prompt, timeout=codex_timeout)
     data = json.loads(raw[raw.find("{") : raw.rfind("}") + 1])
     return str(data.get("translation_en", "")).strip(), str(data.get("introduction_en", "")).strip()
@@ -492,11 +569,11 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
     chunks = _split_chunks(clean_ja)
 
     # primary: Codex CLI
-    codex_err = None
     try:
         parts: list[str] = []
         intro_en = ""
         for i, chunk in enumerate(chunks):
+            _progress(f"[aozora] codex chunk {i + 1}/{len(chunks)} ({len(chunk)} chars)")
             tr_en, intro = _translate_chunk(chunk, title_en, author_en, with_intro=(i == 0))
             parts.append(tr_en)
             if i == 0:
@@ -507,11 +584,11 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
             source="codex-cli",
         )
     except Exception as exc:
-        codex_err = exc
+        _progress(f"[aozora] codex fallback triggered: {exc}")
 
     # fallback: local LLM (single-pass, best effort)
-    local_err = None
     try:
+        _progress("[aozora] falling back to local llm")
         prompt = (
             "Translate the following Japanese literary text into natural modern English.\n"
             "Return JSON only with keys: translation_en, introduction_en.\n"
@@ -525,7 +602,7 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
             source="local-llm",
         )
     except Exception as exc:
-        local_err = exc
+        _progress(f"[aozora] local llm fallback failed: {exc}")
 
     # last resort
     return TranslationResult(

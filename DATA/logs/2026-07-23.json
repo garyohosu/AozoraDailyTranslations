@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-23",
+  "run_datetime_jst": "2026-07-23T09:01:27.817486+09:00",
+  "attempts": [
+    {
+      "index": 124,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card87.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-23-fan-from-konan/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
