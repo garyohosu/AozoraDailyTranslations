@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-24",
+  "run_datetime_jst": "2026-07-24T09:00:52.567282+09:00",
+  "attempts": [
+    {
+      "index": 125,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43374.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-24-mr-koichiro-kondo/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
