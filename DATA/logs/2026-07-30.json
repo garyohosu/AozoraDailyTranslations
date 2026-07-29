@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-07-30",
+  "run_datetime_jst": "2026-07-30T01:26:31.720642+09:00",
+  "attempts": [
+    {
+      "index": 127,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card136.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-07-30-saigo-takamori/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
