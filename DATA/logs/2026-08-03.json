@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-08-03",
+  "run_datetime_jst": "2026-08-03T08:51:24.022466+09:00",
+  "attempts": [
+    {
+      "index": 128,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3779.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/home/garyo/.openclaw/workspace/AozoraDailyTranslations/works/2026-08-03-talent-and-craft-are-one/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
