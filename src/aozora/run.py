@@ -4,7 +4,7 @@ Minimal production runner for OpenClaw cron:
 - loads DATA/works.json + DATA/state.json
 - picks next work
 - fetches source text (best effort)
-- translates (Codex CLI -> local LLM fallback -> safe placeholder)
+- translates (Codex CLI -> local LLM fallback; aborts if both fail)
 - QA audit
 - generates works/YYYY-MM-DD-slug/index.html
 - regenerates top index.html
@@ -482,13 +482,8 @@ def _translate_label_ja_to_en(text_ja: str, kind: str = "title") -> str:
     return out
 
 
-_SAFE_UNAVAILABLE_TRANSLATION = (
-    "Automatic translation is temporarily unavailable. Please check back later."
-)
-_SAFE_UNAVAILABLE_INTRO = (
-    "An English translation could not be generated in the latest run. "
-    "The source metadata and original Japanese reference remain available below."
-)
+class TranslationError(RuntimeError):
+    """Raised when a complete translation cannot be produced safely."""
 
 
 def _progress(message: str) -> None:
@@ -604,12 +599,7 @@ def _translate(clean_ja: str, title_en: str, author_en: str) -> TranslationResul
     except Exception as exc:
         _progress(f"[aozora] local llm fallback failed: {exc}")
 
-    # last resort
-    return TranslationResult(
-        translation_en=_SAFE_UNAVAILABLE_TRANSLATION,
-        introduction_en=_SAFE_UNAVAILABLE_INTRO,
-        source="fallback",
-    )
+    raise TranslationError("all translation engines failed")
 
 
 def _read_work_title(work_index_path: Path, slug: str) -> str:
@@ -743,18 +733,8 @@ def run(date: str) -> dict:
 
     qa = QAAuditor(QAGateConfig()).audit(tr.translation_en, fetch, genre=w.genre)
     if qa.status == "FAIL":
-        if tr.source == "fallback" or qa.gates.get("boilerplate") == "FAIL":
-            tr = TranslationResult(
-                translation_en=_SAFE_UNAVAILABLE_TRANSLATION,
-                introduction_en=_SAFE_UNAVAILABLE_INTRO,
-                source="fallback",
-            )
-        else:
-            tr = TranslationResult(
-                translation_en=tr.translation_en,
-                introduction_en=(tr.introduction_en or "") + " (QA warning)",
-                source=tr.source,
-            )
+        failed = ", ".join(k for k, value in qa.gates.items() if value == "FAIL")
+        raise TranslationError(f"translation failed QA gates: {failed}")
 
     gen = WorkPageGenerator()
     body = gen.generate(w, tr, date)
