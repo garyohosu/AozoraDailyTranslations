@@ -106,6 +106,10 @@ class StateJson:
     def set_exhausted(self) -> None:
         self.status = "exhausted"
 
+    def set_active(self) -> None:
+        """Mark the queue active after new candidates have been appended."""
+        self.status = "active"
+
 
 @dataclass
 class FetchResult:

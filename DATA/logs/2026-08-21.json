@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-08-21",
+  "run_datetime_jst": "2026-08-21T03:22:46.927699+09:00",
+  "attempts": [
+    {
+      "index": 129,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card141.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/workspace/scratch/7a4ce687f9fd/AozoraDailyTranslations-20260821/works/2026-08-21-the-man-of-the-west/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}

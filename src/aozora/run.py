@@ -719,6 +719,12 @@ def run(date: str) -> dict:
         state.save(str(DATA / "state.json"))
         return {"status": "exhausted", "published": None}
 
+    # The previous end of the queue may have been exhausted before new
+    # candidates were appended. Keep persisted state consistent with the
+    # now-processable queue.
+    if state.is_exhausted():
+        state.set_active()
+
     idx = state.next_index
     w = works[idx]
 
@@ -748,6 +754,8 @@ def run(date: str) -> dict:
     state.next_index = idx + 1
     if state.next_index >= len(works):
         state.set_exhausted()
+    else:
+        state.set_active()
     state.save(str(DATA / "state.json"))
 
     log = RunLog(

@@ -319,3 +319,9 @@ class TestStateJsonExhausted:
         state = StateJson(next_index=0, status="exhausted", skip_log=[])
         state.set_exhausted()
         assert state.status == "exhausted"
+
+    def test_set_active_after_candidates_are_appended(self):
+        state = StateJson(next_index=3, status="exhausted", skip_log=[])
+        state.set_active()
+        assert state.status == "active"
+        assert state.is_exhausted() is False
