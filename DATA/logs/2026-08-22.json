@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-08-22",
+  "run_datetime_jst": "2026-08-22T03:17:34+09:00",
+  "attempts": [
+    {
+      "index": 130,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3816.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/workspace/scratch/7a4ce687f9fd/AozoraDailyTranslations-20260822/works/2026-08-22-herons-and-mandarin-ducks/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
