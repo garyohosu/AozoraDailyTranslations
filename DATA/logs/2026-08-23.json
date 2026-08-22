@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-08-23",
+  "run_datetime_jst": "2026-08-23T03:52:47+09:00",
+  "attempts": [
+    {
+      "index": 131,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card51214.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "/workspace/scratch/7a4ce687f9fd/AozoraDailyTranslations-20260823/works/2026-08-23-a-bundle-of-miscellaneous-letters/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
