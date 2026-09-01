@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-09-02",
+  "run_datetime_jst": "2026-09-02T03:18:34+09:00",
+  "attempts": [
+    {
+      "index": 138,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card139.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "works/2026-09-02-monkey/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
