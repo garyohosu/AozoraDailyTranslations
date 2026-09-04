@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-09-05",
+  "run_datetime_jst": "2026-09-05T03:37:46+09:00",
+  "attempts": [
+    {
+      "index": 140,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card138.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "works/2026-09-05-sanemons-crime/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
