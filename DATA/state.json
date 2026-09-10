@@ -1,5 +1,12 @@
 {
-  "next_index": 142,
+  "next_index": 144,
   "status": "active",
-  "skip_log": []
+  "skip_log": [
+    {
+      "date_jst": "2026-09-11",
+      "index": 143,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card60.html",
+      "reason": "Duplicate modern-orthography edition of Hell Screen; published once from index 142."
+    }
+  ]
 }
