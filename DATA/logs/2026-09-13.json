@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-09-13",
+  "run_datetime_jst": "2026-09-13T03:25:20+09:00",
+  "attempts": [
+    {
+      "index": 145,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card13.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "works/2026-09-13-ten-needles/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
