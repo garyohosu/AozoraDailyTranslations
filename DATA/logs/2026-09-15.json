@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-09-15",
+  "run_datetime_jst": "2026-09-15T03:20:04+09:00",
+  "attempts": [
+    {
+      "index": 146,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card3742.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "works/2026-09-15-chinese-paintings/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
