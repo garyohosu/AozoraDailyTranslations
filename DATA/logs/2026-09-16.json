@@ -1,0 +1,7 @@
+{
+  "run_date": "2026-09-16",
+  "run_datetime_jst": "2026-09-16T03:42:20+09:00",
+  "attempts": [{"index": 147, "card_url": "https://www.aozora.gr.jp/cards/000879/card51212.html", "result": "SUCCESS", "reason": "", "output_path": "works/2026-09-16-preface-to-a-china-travelogue/index.html"}],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
