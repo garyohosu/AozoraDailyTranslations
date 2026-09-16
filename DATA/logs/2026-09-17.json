@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-09-17",
+  "run_datetime_jst": "2026-09-17T03:39:04+09:00",
+  "attempts": [
+    {
+      "index": 148,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card43380.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "works/2026-09-17-mr-akahiko-shimaki/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
