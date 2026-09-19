@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-09-20",
+  "run_datetime_jst": "2026-09-20T03:56:22+09:00",
+  "attempts": [
+    {
+      "index": 150,
+      "card_url": "https://www.aozora.gr.jp/cards/000879/card1129.html",
+      "result": "SUCCESS",
+      "reason": "",
+      "output_path": "works/2026-09-20-frosty-night/index.html"
+    }
+  ],
+  "final_status": "SUCCESS",
+  "api_cost_usd": 0.0
+}
